@@ -104,15 +104,15 @@ export default function Header({ currentItem }: { currentItem?: string }) {
                           {userMenu.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
-                                <Link href={item.href}>
-                                  <a
-                                    className={classNames(
-                                      active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
-                                    )}
-                                  >
-                                    {item.name}
-                                  </a>
+                                <Link
+                                  href={item.href}
+                                  legacyBehavior={false}
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  {item.name}
                                 </Link>
                               )}
                             </Menu.Item>

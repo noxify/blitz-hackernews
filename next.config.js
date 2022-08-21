@@ -9,7 +9,7 @@ const config = {
     locales: [ 'de', 'en' ],
     localeDetection: false,
     defaultLocale: 'en'
-  }
+  },
 }
 
 module.exports = withBlitz(config)
