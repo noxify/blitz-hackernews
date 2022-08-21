@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -79,6 +79,7 @@ model Token {
 
 model Entry {
   id       Int     @id @default(autoincrement())
+  type     String
   title    String
   link     String?
   content  String?
