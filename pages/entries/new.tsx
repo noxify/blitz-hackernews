@@ -1,14 +1,10 @@
 import { Routes } from "@blitzjs/next"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "app/core/layouts/Layout"
 import createEntry from "app/entries/mutations/createEntry"
 import { EntryForm, FORM_ERROR } from "app/entries/components/EntryForm"
 import { CreateEntry } from "app/entries/validations"
-import Form from "app/core/components/form/Form"
-import LabeledTextField from "app/core/components/form/LabeledTextField"
-import MarkdownField from "app/core/components/form/MarkdownField"
 import PageHeader from "app/core/components/partials/PageHeader"
 
 const NewEntryPage = () => {

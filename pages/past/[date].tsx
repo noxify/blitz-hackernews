@@ -48,7 +48,10 @@ const Past: BlitzPage = () => {
 
   return (
     <Layout title={t("pages.past.title")} currentItem="past">
-      <PageHeader title={t("pages.past.title")}>
+      <PageHeader
+        title={t("pages.past.title")}
+        subtitle={`(Date: ${format(pastBaseDate, "yyyy-MM-dd")})`}
+      >
         <Link href={`/past/${format(sub(pastBaseDate, { days: 1 }), "yyyy-MM-dd")}`}>
           <a className="mr-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none ">
             <ChevronLeftIcon className="h-4 w-4" /> {t("pages.past.filters.day")}

@@ -10,7 +10,7 @@ import { getLocaleProps, useI18n } from "locales"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
-import { startOfDay } from "date-fns"
+import { format, startOfDay } from "date-fns"
 import Pagination from "app/core/components/list/Pagination"
 
 export const getServerSideProps = getLocaleProps()
@@ -36,7 +36,10 @@ const Home: BlitzPage = () => {
 
   return (
     <Layout title={t("pages.latest.title")} currentItem="home">
-      <PageHeader title="Lastest Entries" />
+      <PageHeader
+        title="Lastest Entries"
+        subtitle={`(Date: ${format(new Date(), "yyyy-MM-dd")})`}
+      />
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Pagination
           position="top"
