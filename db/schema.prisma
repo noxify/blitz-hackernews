@@ -78,14 +78,15 @@ model Token {
 }
 
 model Entry {
-  id       Int     @id @default(autoincrement())
-  type     String
-  title    String
-  link     String?
-  content  String?
-  author   User    @relation(fields: [authorId], references: [id])
-  authorId Int
-  votes    Vote[]
+  id        Int      @id @default(autoincrement())
+  type      String
+  title     String
+  link      String?
+  content   String?
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  votes     Vote[]
+  createdAt DateTime @default(now())
 }
 
 model Vote {
