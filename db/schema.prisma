@@ -21,8 +21,28 @@ model User {
   hashedPassword String?
   role           String   @default("USER")
 
-  tokens   Token[]
-  sessions Session[]
+  tokens    Token[]
+  sessions  Session[]
+  entries   Entry[]
+  votes     Vote[]
+  hides     Hide[]
+  favorites Favorite[]
+}
+
+model Hide {
+  user    User @relation(fields: [userId], references: [id])
+  userId  Int
+  entryId Int
+
+  @@unique([userId, entryId])
+}
+
+model Favorite {
+  user    User @relation(fields: [userId], references: [id])
+  userId  Int
+  entryId Int
+
+  @@unique([userId, entryId])
 }
 
 model Session {
@@ -55,6 +75,38 @@ model Token {
   userId Int
 
   @@unique([hashedToken, type])
+}
+
+model Entry {
+  id       Int     @id @default(autoincrement())
+  title    String
+  link     String?
+  content  String?
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId Int
+  votes    Vote[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  entry     Entry?   @relation(fields: [entryId], references: [id])
+  entryId   Int?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  parentId  Int?
+  parent    Comment?  @relation("CommentReply", fields: [parentId], references: [id])
+  children  Comment[] @relation("CommentReply")
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  votes Vote[]
 }
 
 // NOTE: It's highly recommended to use an enum for the token type

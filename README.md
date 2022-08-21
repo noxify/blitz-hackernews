@@ -1,173 +1,65 @@
-[![Blitz.js](https://raw.githubusercontent.com/blitz-js/art/master/github-cover-photo.png)](https://blitzjs.com)
+# HackerNews Clone with the BlitzJS Toolkit and NextJS
 
-This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
+This is an example app which use HackerNews as inpiration to build an app with the new BlitzJS Toolkit.
 
-# ****name****
+## What's the difference to other Hackernews Clones?
 
-## Getting Started
+This clone doesn't use the HackerNews API to show the entries,
+it's more a "self-hosted hackernews".
 
-Run your app in the development mode.
+## What's included
 
-```
-blitz dev
-```
+* Simple UI with tailwind
+* User management ( login, signup etc. via BlitzJS )
+* List entries
+* Show entry details
+* Hide entries
+* Up-Vote entries
+* Comments
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What's not included
 
-## Environment Variables
+* No admin ui to manage the records
+* No 3rd party login ( but you can add it easily )
+* No api endpoints for now
 
-Ensure the `.env.local` file has required environment variables:
+## Installation
 
-```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/blitz-hackernews
-```
-
-Ensure the `.env.test.local` file has required environment variables:
-
-```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/blitz-hackernews_test
-```
-
-## Tests
-
-Runs your tests using Jest.
-
-```
-yarn test
+```sh
+git clone git@github.com:noxify/blitz-hackernews.git
+cd blitz-hackernews
+npm i
 ```
 
-Blitz comes with a test setup using [Jest](https://jestjs.io/) and [react-testing-library](https://testing-library.com/).
+## Run it locally
 
-## Commands
+Just run the following command 🤷🏿‍♂️
 
-Blitz comes with a powerful CLI that is designed to make development easy and fast. You can install it with `npm i -g blitz`
-
-```
-  blitz [COMMAND]
-
-  dev       Start a development server
-  build     Create a production build
-  start     Start a production server
-  export    Export your Blitz app as a static application
-  prisma    Run prisma commands
-  generate  Generate new files for your Blitz project
-  console   Run the Blitz console REPL
-  install   Install a recipe
-  help      Display help for blitz
-  test      Run project tests
+```sh
+npm run dev
 ```
 
-You can read more about it on the [CLI Overview](https://blitzjs.com/docs/cli-overview) documentation.
+## Use a different database engine
 
-## What's included?
+By default the app uses a SQLite database - You can change it to what you want.
 
-Here is the starting structure of your app.
+Here some helpful links which should help to change the db engine.
 
-```
-blitz-hackernews
-├── app/
-│   ├── api/
-│   ├── auth/
-│   │   ├── components/
-│   │   │   ├── LoginForm.tsx
-│   │   │   └── SignupForm.tsx
-│   │   ├── mutations/
-│   │   │   ├── changePassword.ts
-│   │   │   ├── forgotPassword.test.ts
-│   │   │   ├── forgotPassword.ts
-│   │   │   ├── login.ts
-│   │   │   ├── logout.ts
-│   │   │   ├── resetPassword.test.ts
-│   │   │   ├── resetPassword.ts
-│   │   │   └── signup.ts
-│   │   ├── pages/
-│   │   │   ├── forgot-password.tsx
-│   │   │   ├── login.tsx
-│   │   │   ├── reset-password.tsx
-│   │   │   └── signup.tsx
-│   │   └── validations.ts
-│   ├── core/
-│   │   ├── components/
-│   │   │   ├── Form.tsx
-│   │   │   └── LabeledTextField.tsx
-│   │   ├── hooks/
-│   │   │   └── useCurrentUser.ts
-│   │   └── layouts/
-│   │       └── Layout.tsx
-│   ├── pages/
-│   │   ├── _app.tsx
-│   │   ├── _document.tsx
-│   │   ├── 404.tsx
-│   │   ├── index.test.tsx
-│   │   └── index.tsx
-│   └── users/
-│       └── queries/
-│           └── getCurrentUser.ts
-├── db/
-│   ├── migrations/
-│   ├── index.ts
-│   ├── schema.prisma
-│   └── seeds.ts
-├── integrations/
-├── mailers/
-│   └── forgotPasswordMailer.ts
-├── public/
-│   ├── favicon.ico
-│   └── logo.png
-├── test/
-│   ├── setup.ts
-│   └── utils.tsx
-├── .eslintrc.js
-├── babel.config.js
-├── blitz.config.ts
-├── jest.config.ts
-├── package.json
-├── README.md
-├── tsconfig.json
-└── types.ts
-```
+* https://blitzjs.com/docs/postgres
+* https://www.prisma.io/docs/concepts/database-connectors
 
-These files are:
+## Used packages
+* BlitzJS
+* NextJS
+* Prisma
+* TailwindCSS with TailwindUI component
+* HeadlessUI
+* Next-International
 
-- The `app/` folder is a container for most of your project. This is where you’ll put any pages or API routes.
+## Credits
 
-- `db/` is where your database configuration goes. If you’re writing models or checking migrations, this is where to go.
-
-- `public/` is a folder where you will put any static assets. If you have images, files, or videos which you want to use in your app, this is where to put them.
-
-- `integrations/` is a folder to put all third-party integrations like with Stripe, Sentry, etc.
-
-- `test/` is a folder where you can put test utilities and integration tests.
-
-- `package.json` contains information about your dependencies and devDependencies. If you’re using a tool like `npm` or `yarn`, you won’t have to worry about this much.
-
-- `tsconfig.json` is our recommended setup for TypeScript.
-
-- `.babel.config.js`, `.eslintrc.js`, `.env`, etc. ("dotfiles") are configuration files for various bits of JavaScript tooling.
-
-- `blitz.config.ts` is for advanced custom configuration of Blitz. [Here you can learn how to use it](https://blitzjs.com/docs/blitz-config).
-
-- `jest.config.js` contains config for Jest tests. You can [customize it if needed](https://jestjs.io/docs/en/configuration).
-
-You can read more about it in the [File Structure](https://blitzjs.com/docs/file-structure) section of the documentation.
-
-### Tools included
-
-Blitz comes with a set of tools that corrects and formats your code, facilitating its future maintenance. You can modify their options and even uninstall them.
-
-- **ESLint**: It lints your code: searches for bad practices and tell you about it. You can customize it via the `.eslintrc.js`, and you can install (or even write) plugins to have it the way you like it. It already comes with the [`blitz`](https://github.com/blitz-js/blitz/tree/canary/packages/eslint-config) config, but you can remove it safely. [Learn More](https://blitzjs.com/docs/eslint-config).
-- **Husky**: It adds [githooks](https://git-scm.com/docs/githooks), little pieces of code that get executed when certain Git events are triggerd. For example, `pre-commit` is triggered just before a commit is created. You can see the current hooks inside `.husky/`. If are having problems commiting and pushing, check out ther [troubleshooting](https://typicode.github.io/husky/#/?id=troubleshoot) guide. [Learn More](https://blitzjs.com/docs/husky-config).
-- **Prettier**: It formats your code to look the same everywhere. You can configure it via the `.prettierrc` file. The `.prettierignore` contains the files that should be ignored by Prettier; useful when you have large files or when you want to keep a custom formatting. [Learn More](https://blitzjs.com/docs/prettier-config).
-
-## Learn more
-
-Read the [Blitz.js Documentation](https://blitzjs.com/docs/getting-started) to learn more.
-
-The Blitz community is warm, safe, diverse, inclusive, and fun! Feel free to reach out to us in any of our communication channels.
-
-- [Website](https://blitzjs.com)
-- [Discord](https://blitzjs.com/discord)
-- [Report an issue](https://github.com/blitz-js/blitz/issues/new/choose)
-- [Forum discussions](https://github.com/blitz-js/blitz/discussions)
-- [How to Contribute](https://blitzjs.com/docs/contributing)
-- [Sponsor or donate](https://github.com/blitz-js/blitz#sponsors-and-donations)
+* The [BlitzJS](https://blitzjs.com/) team - you're awesome
+* The [TailwindCSS](https://tailwindcss.com/)/[TailwindUI](https://tailwindui.com/) team - thanks for the awesome components
+* The VueJS team for the [theme inspiration](https://www.prisma.io/docs/concepts/database-connectors)
+* My wife for being at a festival, so I had time to develop this app 🙈
+* [@QuiiBz](https://github.com/QuiiBz) for creating the awesome [next-international](https://github.com/QuiiBz/next-international) package
