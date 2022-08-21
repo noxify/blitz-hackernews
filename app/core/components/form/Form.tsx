@@ -58,7 +58,11 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            <button type="submit" disabled={isSubmitting}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-orange-500 hover:bg-orange-600 border-orange-700 px-4 py-2 rounded"
+            >
               {submitText}
             </button>
           )}
