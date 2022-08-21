@@ -1,7 +1,11 @@
 import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@blitzjs/next"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import React from "react"
+import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
+
+import "resources/css/tailwind.css"
+import Spinner from "app/core/components/Spinner"
+import { I18nProvider } from "locales"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -26,7 +30,11 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      <Component {...pageProps} />
+      <Suspense fallback={<Spinner />}>
+        <I18nProvider locale={pageProps.locale}>
+          <Component {...pageProps} />
+        </I18nProvider>
+      </Suspense>
     </ErrorBoundary>
   )
 }

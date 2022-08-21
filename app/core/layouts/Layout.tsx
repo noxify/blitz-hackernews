@@ -1,9 +1,11 @@
 import Head from "next/head"
 import React, { FC } from "react"
 import { BlitzLayout } from "@blitzjs/next"
+import Header from "app/core/components/partials/Header"
 
-const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
+const Layout: BlitzLayout<{ title?: string; currentItem?: string; children?: React.ReactNode }> = ({
   title,
+  currentItem,
   children,
 }) => {
   return (
@@ -13,7 +15,10 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {children}
+      <div className="min-h-full">
+        <Header currentItem={currentItem} />
+        {children}
+      </div>
     </>
   )
 }
