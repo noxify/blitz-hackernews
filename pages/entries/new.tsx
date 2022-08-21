@@ -46,6 +46,8 @@ const NewEntryPage = () => {
   )
 }
 
-NewEntryPage.authenticate = true
+NewEntryPage.authenticate = {
+  redirectTo: Routes.LoginPage(),
+}
 
 export default NewEntryPage

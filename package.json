@@ -6,6 +6,8 @@
     "build": "blitz build",
     "start": "blitz start",
     "studio": "blitz prisma studio",
+    "seed": "blitz db seed",
+    "migrate:reset": "blitz prisma migrate reset --skip-seed",
     "migrate:dev": "blitz prisma migrate dev --skip-seed",
     "migrate:create": "blitz prisma migrate dev --create-only",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
@@ -48,6 +50,7 @@
     "zod": "3.18.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "7.4.0",
     "@next/bundle-analyzer": "12.2.5",
     "@testing-library/jest-dom": "5.16.5",
     "@types/jest": "28.1.7",
