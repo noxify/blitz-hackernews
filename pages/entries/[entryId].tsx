@@ -1,20 +1,31 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
-import Layout from "app/core/layouts/Layout";
-import getEntry from "app/entries/queries/getEntry";
-import deleteEntry from "app/entries/mutations/deleteEntry";
+import Layout from "app/core/layouts/Layout"
+import getEntry from "app/entries/queries/getEntry"
+import deleteEntry from "app/entries/mutations/deleteEntry"
+import getComments from "app/comments/queries/getComments"
+import { arrayToTree } from "performant-array-to-tree"
+import { Comments } from "app/comments/components/Comment"
 
 export const Entry = () => {
-  const router = useRouter();
-  const entryId = useParam("entryId", "number");
-  const [deleteEntryMutation] = useMutation(deleteEntry);
-  const [entry] = useQuery(getEntry, { id: entryId });
+  const router = useRouter()
+  const entryId = useParam("entryId", "number")
+  const [deleteEntryMutation] = useMutation(deleteEntry)
+  const [entry] = useQuery(getEntry, { id: entryId })
+  const [comments] = useQuery(getComments, {
+    orderBy: { id: "desc" },
+    where: {
+      entryId,
+    },
+  })
+
+  const commentTree = arrayToTree(comments, {})
 
   return (
     <>
@@ -30,22 +41,11 @@ export const Entry = () => {
           <a>Edit</a>
         </Link>
 
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteEntryMutation({ id: entry.id });
-              router.push(Routes.EntriesPage());
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
+        <Comments comments={commentTree} />
       </div>
     </>
-  );
-};
+  )
+}
 
 const ShowEntryPage = () => {
   return (
@@ -60,10 +60,10 @@ const ShowEntryPage = () => {
         <Entry />
       </Suspense>
     </div>
-  );
-};
+  )
+}
 
-ShowEntryPage.authenticate = true;
-ShowEntryPage.getLayout = (page) => <Layout>{page}</Layout>;
+ShowEntryPage.authenticate = false
+ShowEntryPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default ShowEntryPage;
+export default ShowEntryPage

@@ -6,7 +6,9 @@ import {
   EyeOffIcon,
   UserIcon,
 } from "@heroicons/react/outline"
-import { Entry, User } from "@prisma/client"
+import { Comment, Entry, User, Vote } from "@prisma/client"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { getSiteName } from "app/helper"
 import { formatDistance } from "date-fns"
 import { useI18n } from "locales"
 import Link from "next/link"
@@ -16,8 +18,12 @@ const RecordList = ({
 }: {
   data: (Entry & {
     author: User
+    comments: Comment[]
+    votes: Vote[]
   })[]
 }) => {
+  const currentUser = useCurrentUser()
+
   const { t } = useI18n()
 
   return (
@@ -37,19 +43,31 @@ const RecordList = ({
                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                   <div className="truncate">
                     <div className="flex text-sm">
-                      <a
-                        href="#"
-                        className="font-medium text-orange-600 hover:text-orange-800 truncate"
-                      >
-                        {entry.title}
-                      </a>
-                      <p className="ml-1 flex-shrink-0 font-normal text-gray-500">
-                        ({" "}
-                        <a href="#" className="hover:underline">
-                          sitename
-                        </a>{" "}
-                        )
-                      </p>
+                      {entry.link ? (
+                        <a
+                          href={entry.link}
+                          target="_blank"
+                          className="font-medium text-orange-600 hover:text-orange-800 truncate"
+                          rel="noreferrer"
+                        >
+                          {entry.title}
+                        </a>
+                      ) : (
+                        <Link href={`/entry/${entry.id}`}>
+                          <a className="font-medium text-orange-600 hover:text-orange-800 truncate">
+                            {entry.title}
+                          </a>
+                        </Link>
+                      )}
+                      {entry.siteName && (
+                        <p className="ml-1 flex-shrink-0 font-normal text-gray-500">
+                          ({" "}
+                          <Link href={`/filter?siteName=${entry.siteName}`}>
+                            <a className="hover:underline">{entry.siteName}</a>
+                          </Link>{" "}
+                          )
+                        </p>
+                      )}
                     </div>
                     <div className="mt-1 flex justify-between">
                       <div className="flex w-full">
@@ -58,8 +76,7 @@ const RecordList = ({
                             className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <Link href="/user/">
-                            {/* @ts-ignore */}
+                          <Link href={`/user/${entry.author.id}`}>
                             <a className="hover:underline">{entry.author.name}</a>
                           </Link>
                         </div>
@@ -68,7 +85,7 @@ const RecordList = ({
                             className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <Link href="/entry/">
+                          <Link href={`/entry/${entry.id}`}>
                             <a className="hover:underline">
                               {formatDistance(new Date(entry.createdAt), new Date(), {
                                 addSuffix: true,
@@ -82,24 +99,28 @@ const RecordList = ({
                             className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <Link href="/comments/">
-                            <a className="hover:underline">{t("recordlist.comments")}</a>
+                          <Link href={`/comments/${entry.id}`}>
+                            <a className="hover:underline">
+                              {t("recordlist.comments")} ({entry.comments.length})
+                            </a>
                           </Link>
                         </div>
-                        <div className="ml-2 flex items-center text-sm text-gray-500 ">
-                          <EyeOffIcon
-                            className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                          <a
-                            className="hover:underline"
-                            onClick={() => {
-                              console.log("hide record")
-                            }}
-                          >
-                            {t("recordlist.hide")}
-                          </a>
-                        </div>
+                        {currentUser && (
+                          <div className="ml-2 flex items-center text-sm text-gray-500 ">
+                            <EyeOffIcon
+                              className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <a
+                              className="hover:underline"
+                              onClick={() => {
+                                console.log("hide record")
+                              }}
+                            >
+                              {t("recordlist.hide")}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

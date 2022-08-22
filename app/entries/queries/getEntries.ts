@@ -17,7 +17,12 @@ export default resolver.pipe(async ({ where, orderBy, skip = 0, take = 100 }: Ge
 
     count: () => db.entry.count({ where }),
     query: (paginateArgs) =>
-      db.entry.findMany({ ...paginateArgs, where, orderBy, include: { author: true } }),
+      db.entry.findMany({
+        ...paginateArgs,
+        where,
+        orderBy,
+        include: { author: true, comments: true, votes: true },
+      }),
   })
 
   return {

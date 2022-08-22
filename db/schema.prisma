@@ -27,6 +27,7 @@ model User {
   votes     Vote[]
   hides     Hide[]
   favorites Favorite[]
+  comments  Comment[]
 }
 
 model Hide {
@@ -82,11 +83,15 @@ model Entry {
   type      String
   title     String
   link      String?
+  siteName  String?
   content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  votes     Vote[]
   createdAt DateTime @default(now())
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  votes    Vote[]
+  comments Comment[]
 }
 
 model Vote {
@@ -107,6 +112,12 @@ model Comment {
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  entry   Entry @relation(fields: [entryId], references: [id])
+  entryId Int
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
 
   votes Vote[]
 }

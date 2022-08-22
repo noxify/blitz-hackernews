@@ -1,5 +1,6 @@
 import db from "db"
 import { faker } from "@faker-js/faker"
+import { getSiteName } from "app/helper"
 
 const seed = async () => {
   const generatedUsers: number[] = []
@@ -19,7 +20,115 @@ const seed = async () => {
     generatedUsers.push(seedRecord.id)
   }
 
-  for (let iJulyGeneral = 0; iJulyGeneral < 1000; iJulyGeneral++) {
+  const julyGeneral = await createEntries({
+    type: "general",
+    amount: 1000,
+    from: "2022-07-01T00:00:00.000Z",
+    to: "2022-08-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const augustGeneral = await createEntries({
+    type: "general",
+    amount: 1000,
+    from: "2022-08-01T00:00:00.000Z",
+    to: "2022-09-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const julyAsk = await createEntries({
+    type: "ask",
+    amount: 1000,
+    from: "2022-07-01T00:00:00.000Z",
+    to: "2022-08-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const augustAsk = await createEntries({
+    type: "general",
+    amount: 1000,
+    from: "2022-08-01T00:00:00.000Z",
+    to: "2022-09-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const julyTell = await createEntries({
+    type: "tell",
+    amount: 1000,
+    from: "2022-07-01T00:00:00.000Z",
+    to: "2022-08-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const augustTell = await createEntries({
+    type: "tell",
+    amount: 1000,
+    from: "2022-08-01T00:00:00.000Z",
+    to: "2022-09-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const julyShow = await createEntries({
+    type: "show",
+    amount: 1000,
+    from: "2022-07-01T00:00:00.000Z",
+    to: "2022-08-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const augustShow = await createEntries({
+    type: "show",
+    amount: 1000,
+    from: "2022-08-01T00:00:00.000Z",
+    to: "2022-09-01T00:00:00.000Z",
+    userIds: generatedUsers,
+  })
+
+  const githubRecord = await db.entry.create({
+    data: {
+      type: "general",
+      title: "Github Link Example",
+      link: "https://github.com/noxify/repository",
+      siteName: getSiteName("https://github.com/noxify/repository"),
+      content: faker.datatype.boolean() ? faker.lorem.paragraphs(3).replace(/\n/gi, "\n\n") : null,
+      authorId: faker.helpers.arrayElement(generatedUsers),
+      createdAt: new Date(),
+    },
+  })
+
+  const generalEntries = ([] as number[]).concat(julyGeneral, augustGeneral, [githubRecord.id])
+  const askEntries = ([] as number[]).concat(julyAsk, augustAsk)
+  const tellEntries = ([] as number[]).concat(julyTell, augustTell)
+  const showEntries = ([] as number[]).concat(julyShow, augustShow)
+
+  const generalComments = await createComments({
+    entryIds: generalEntries,
+    userIds: generatedUsers,
+    amount: {
+      min: 0,
+      max: 20,
+    },
+    levels: 4,
+    currentLevel: 0,
+  })
+}
+
+const createEntries = async ({
+  type,
+  amount,
+  from,
+  to,
+  userIds,
+}: {
+  type: string
+  amount: number
+  from: Date | string
+  to: Date | string
+  userIds: number[]
+}): Promise<number[]> => {
+  const recordIds: number[] = []
+
+  for (let count = 0; count < amount; count++) {
     const urlPath = faker.datatype.boolean()
       ? faker.random
           .words(faker.datatype.number({ min: 1, max: 6 }))
@@ -27,50 +136,75 @@ const seed = async () => {
           .toLowerCase()
       : ""
 
-    const withLink = faker.datatype.boolean()
+    const link = faker.datatype.boolean()
+      ? `${faker.internet.url()}${faker.datatype.boolean() ? `/${urlPath}` : ""}`
+      : null
+
     const seedRecord = await db.entry.create({
       data: {
-        type: "general",
+        type: type,
         title: faker.lorem.words(faker.datatype.number({ min: 3, max: 10 })),
-        link: faker.datatype.boolean()
-          ? `${faker.internet.url()}${faker.datatype.boolean() ? urlPath : ""}`
-          : null,
+        link: link,
+        siteName: link ? getSiteName(link) : null,
         content: faker.datatype.boolean()
-          ? faker.lorem.paragraphs(3).replace(/\n/gi, "\n\n")
+          ? faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 3 }), "\n\n")
           : null,
-        authorId: faker.helpers.arrayElement(generatedUsers),
-        createdAt: faker.date.between("2020-07-01T00:00:00.000Z", "2022-08-01T00:00:00.000Z"),
+        authorId: faker.helpers.arrayElement(userIds),
+        createdAt: faker.date.between(from, to),
       },
     })
 
-    generatedGeneral.push(seedRecord.id)
+    recordIds.push(seedRecord.id)
   }
 
-  for (let iAugustGeneral = 0; iAugustGeneral < 1000; iAugustGeneral++) {
-    const urlPath = faker.datatype.boolean()
-      ? faker.random
-          .words(faker.datatype.number({ min: 1, max: 6 }))
-          .replace(/ /g, "/")
-          .toLowerCase()
-      : ""
+  return recordIds
+}
 
-    const withLink = faker.datatype.boolean()
-    const seedRecord = await db.entry.create({
+const createComments = async ({
+  entryIds,
+  userIds,
+  amount,
+  levels,
+  currentLevel,
+  parentId,
+  parentEntryId,
+}: {
+  entryIds: number[]
+  userIds: number[]
+  amount: {
+    min: number
+    max: number
+  }
+  parentId?: number
+  levels: number
+  currentLevel: number
+  parentEntryId?: number
+}) => {
+  for (let commentCount = 0; commentCount < faker.datatype.number(amount); commentCount++) {
+    const entryId = faker.helpers.arrayElement(entryIds)
+    const commentRecord = await db.comment.create({
       data: {
-        type: "general",
-        title: faker.lorem.words(faker.datatype.number({ min: 3, max: 10 })),
-        link: faker.datatype.boolean()
-          ? `${faker.internet.url()}${faker.datatype.boolean() ? urlPath : ""}`
-          : null,
-        content: faker.datatype.boolean()
-          ? faker.lorem.paragraphs(3).replace(/\n/gi, "\n\n")
-          : null,
-        authorId: faker.helpers.arrayElement(generatedUsers),
-        createdAt: faker.date.between("2020-08-01T00:00:00.000Z", "2022-09-01T00:00:00.000Z"),
+        entryId: parentEntryId || entryId,
+        authorId: faker.helpers.arrayElement(userIds),
+        content: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 }), "\n\n"),
+        parentId: parentId,
       },
     })
 
-    generatedGeneral.push(seedRecord.id)
+    if (currentLevel < levels) {
+      await createComments({
+        entryIds: entryIds,
+        userIds: userIds,
+        amount: {
+          min: 0,
+          max: 5,
+        },
+        levels: levels,
+        currentLevel: currentLevel++,
+        parentId: commentRecord.id,
+        parentEntryId: parentEntryId || entryId,
+      })
+    }
   }
 }
 

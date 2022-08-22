@@ -1,5 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { CreateEntry } from "app/entries/validations"
+import { getSiteName } from "app/helper"
 import db from "db"
 import { z } from "zod"
 
@@ -12,6 +13,7 @@ export default resolver.pipe(
       data: {
         ...input,
         authorId: ctx.session.userId,
+        siteName: input.link && input.link != "" ? getSiteName(input.link) : null,
       },
     })
 

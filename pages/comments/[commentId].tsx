@@ -1,69 +1,65 @@
-import { Suspense } from "react";
-import { Routes } from "@blitzjs/next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useQuery, useMutation } from "@blitzjs/rpc";
-import { useParam } from "@blitzjs/next";
+import { Suspense } from "react"
+import { Routes, useParam } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
+import Layout from "app/core/layouts/Layout"
+import getComments from "app/comments/queries/getComments"
+import { arrayToTree } from "performant-array-to-tree"
 
-import Layout from "app/core/layouts/Layout";
-import getComment from "app/comments/queries/getComment";
-import deleteComment from "app/comments/mutations/deleteComment";
+const ITEMS_PER_PAGE = 100
 
-export const Comment = () => {
-  const router = useRouter();
-  const commentId = useParam("commentId", "number");
-  const [deleteCommentMutation] = useMutation(deleteComment);
-  const [comment] = useQuery(getComment, { id: commentId });
+export const CommentsList = () => {
+  const router = useRouter()
+  const entryId = useParam("commentId", "number")
 
+  const page = Number(router.query.page) || 0
+  const [comments] = useQuery(getComments, {
+    orderBy: { id: "desc" },
+    where: {
+      entryId,
+    },
+  })
+
+  const commentTree = arrayToTree(comments, {})
+
+  console.log(commentTree)
   return (
-    <>
+    <div>
+      <ul>
+        {comments.map((comment) => (
+          <li key={comment.id}>
+            <Link href={Routes.ShowCommentPage({ commentId: comment.id })}>
+              <a>{comment.id}</a>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+const CommentsPage = () => {
+  return (
+    <Layout>
       <Head>
-        <title>Comment {comment.id}</title>
+        <title>Comments</title>
       </Head>
 
       <div>
-        <h1>Comment {comment.id}</h1>
-        <pre>{JSON.stringify(comment, null, 2)}</pre>
+        <p>
+          <Link href={Routes.NewCommentPage()}>
+            <a>Create Comment</a>
+          </Link>
+        </p>
 
-        <Link href={Routes.EditCommentPage({ commentId: comment.id })}>
-          <a>Edit</a>
-        </Link>
-
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteCommentMutation({ id: comment.id });
-              router.push(Routes.CommentsPage());
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
+        <Suspense fallback={<div>Loading...</div>}>
+          <CommentsList />
+        </Suspense>
       </div>
-    </>
-  );
-};
+    </Layout>
+  )
+}
 
-const ShowCommentPage = () => {
-  return (
-    <div>
-      <p>
-        <Link href={Routes.CommentsPage()}>
-          <a>Comments</a>
-        </Link>
-      </p>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <Comment />
-      </Suspense>
-    </div>
-  );
-};
-
-ShowCommentPage.authenticate = true;
-ShowCommentPage.getLayout = (page) => <Layout>{page}</Layout>;
-
-export default ShowCommentPage;
+export default CommentsPage
