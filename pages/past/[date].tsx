@@ -6,7 +6,7 @@ import logo from "public/logo.png"
 import { Routes, BlitzPage, useParam } from "@blitzjs/next"
 import PageHeader from "app/core/components/partials/PageHeader"
 import RecordList from "app/core/components/list/RecordList"
-import { ChevronLeftIcon } from "@heroicons/react/outline"
+import { ChevronLeftIcon } from "@heroicons/react/24/outline"
 import { format, startOfDay, sub } from "date-fns"
 import { getLocaleProps, useI18n } from "locales"
 import { useRouter } from "next/router"
@@ -15,7 +15,6 @@ import { endOfDay } from "date-fns"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import Pagination from "app/core/components/list/Pagination"
-import { count } from "console"
 
 export const getServerSideProps = getLocaleProps()
 

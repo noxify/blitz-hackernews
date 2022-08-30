@@ -1,4 +1,4 @@
-import { ArrowNarrowLeftIcon, ArrowNarrowRightIcon } from "@heroicons/react/outline"
+import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline"
 import classNames from "classnames"
 
 const Pagination = ({
@@ -33,7 +33,7 @@ const Pagination = ({
             currentPage != 0 ? "hover:text-gray-700 " : "hidden"
           )}
         >
-          <ArrowNarrowLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+          <ArrowLongLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
           Previous
         </button>
       </div>
@@ -54,7 +54,7 @@ const Pagination = ({
           )}
         >
           Next
-          <ArrowNarrowRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+          <ArrowLongRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
         </button>
       </div>
     </nav>

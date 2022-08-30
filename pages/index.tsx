@@ -10,7 +10,7 @@ import { getLocaleProps, useI18n } from "locales"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
-import { format, startOfDay } from "date-fns"
+import { endOfDay, format, startOfDay } from "date-fns"
 import Pagination from "app/core/components/list/Pagination"
 
 export const getServerSideProps = getLocaleProps()
@@ -25,7 +25,12 @@ const Home: BlitzPage = () => {
   const [{ entries, count, hasMore }] = usePaginatedQuery(getEntries, {
     orderBy: { id: "desc" },
     where: {
-      createdAt: { gte: startOfDay(new Date()) },
+      AND: [
+        {
+          createdAt: { gte: startOfDay(new Date()) },
+        },
+        { createdAt: { lte: endOfDay(new Date()) } },
+      ],
     },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

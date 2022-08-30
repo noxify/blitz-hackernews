@@ -2,10 +2,14 @@ import db from "db"
 import { faker } from "@faker-js/faker"
 import { getSiteName } from "app/helper"
 
+import { log } from "blitz"
+
 const seed = async () => {
+  const amountEntries = 100
   const generatedUsers: number[] = []
   const generatedGeneral: number[] = []
 
+  const userLog = log.spinner("Generate users").start()
   for (let iUsers = 0; iUsers < 300; iUsers++) {
     const firstName = faker.name.firstName().toLowerCase()
     const lastName = faker.name.lastName().toLowerCase()
@@ -19,10 +23,12 @@ const seed = async () => {
 
     generatedUsers.push(seedRecord.id)
   }
+  userLog.succeed()
 
+  const entryLog = log.spinner("Generate entries").start()
   const julyGeneral = await createEntries({
     type: "general",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-07-01T00:00:00.000Z",
     to: "2022-08-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -30,7 +36,7 @@ const seed = async () => {
 
   const augustGeneral = await createEntries({
     type: "general",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-08-01T00:00:00.000Z",
     to: "2022-09-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -38,7 +44,7 @@ const seed = async () => {
 
   const julyAsk = await createEntries({
     type: "ask",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-07-01T00:00:00.000Z",
     to: "2022-08-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -46,7 +52,7 @@ const seed = async () => {
 
   const augustAsk = await createEntries({
     type: "general",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-08-01T00:00:00.000Z",
     to: "2022-09-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -54,7 +60,7 @@ const seed = async () => {
 
   const julyTell = await createEntries({
     type: "tell",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-07-01T00:00:00.000Z",
     to: "2022-08-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -62,7 +68,7 @@ const seed = async () => {
 
   const augustTell = await createEntries({
     type: "tell",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-08-01T00:00:00.000Z",
     to: "2022-09-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -70,7 +76,7 @@ const seed = async () => {
 
   const julyShow = await createEntries({
     type: "show",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-07-01T00:00:00.000Z",
     to: "2022-08-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -78,7 +84,7 @@ const seed = async () => {
 
   const augustShow = await createEntries({
     type: "show",
-    amount: 1000,
+    amount: amountEntries,
     from: "2022-08-01T00:00:00.000Z",
     to: "2022-09-01T00:00:00.000Z",
     userIds: generatedUsers,
@@ -96,21 +102,27 @@ const seed = async () => {
     },
   })
 
+  entryLog.succeed()
+
   const generalEntries = ([] as number[]).concat(julyGeneral, augustGeneral, [githubRecord.id])
   const askEntries = ([] as number[]).concat(julyAsk, augustAsk)
   const tellEntries = ([] as number[]).concat(julyTell, augustTell)
   const showEntries = ([] as number[]).concat(julyShow, augustShow)
 
+  const allEntries = ([] as number[]).concat(generalEntries, askEntries, tellEntries, showEntries)
+
+  const voteLog = log.spinner("Generate votes").start()
+  await createEntryVotes({ userIds: generatedUsers, entryIds: allEntries })
+  voteLog.succeed()
+
+  const commentLog = log.spinner("Generate comments").start()
   const generalComments = await createComments({
-    entryIds: generalEntries,
+    entryIds: allEntries,
     userIds: generatedUsers,
-    amount: {
-      min: 0,
-      max: 20,
-    },
-    levels: 4,
-    currentLevel: 0,
+
+    levels: 2,
   })
+  commentLog.succeed()
 }
 
 const createEntries = async ({
@@ -147,7 +159,7 @@ const createEntries = async ({
         link: link,
         siteName: link ? getSiteName(link) : null,
         content: faker.datatype.boolean()
-          ? faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 3 }), "\n\n")
+          ? faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 }), "\n\n\n\n")
           : null,
         authorId: faker.helpers.arrayElement(userIds),
         createdAt: faker.date.between(from, to),
@@ -163,49 +175,131 @@ const createEntries = async ({
 const createComments = async ({
   entryIds,
   userIds,
-  amount,
   levels,
-  currentLevel,
-  parentId,
-  parentEntryId,
 }: {
   entryIds: number[]
   userIds: number[]
-  amount: {
-    min: number
-    max: number
-  }
-  parentId?: number
+  levels: number
+}) => {
+  await db.comment.createMany({
+    data: faker.helpers
+      .arrayElements(entryIds, faker.datatype.number({ min: 1, max: entryIds.length }))
+      .flatMap((ele) => {
+        return faker.helpers
+          .arrayElements(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            faker.datatype.number({ min: 1, max: 10 })
+          )
+          .flatMap((val) => {
+            return {
+              entryId: ele,
+              authorId: faker.helpers.arrayElement(userIds),
+              content: faker.lorem.paragraphs(
+                faker.datatype.number({ min: 1, max: 5 }),
+                "\n\n\n\n"
+              ),
+              parentId: null,
+            }
+          })
+      }),
+    skipDuplicates: true,
+  })
+
+  const generatedComments = await db.comment.findMany({ select: { id: true, entryId: true } })
+
+  await createCommentReplies({ comments: generatedComments, userIds, levels, currentLevel: 0 })
+}
+
+const createCommentReplies = async ({
+  comments,
+  userIds,
+  levels,
+  currentLevel,
+  parentComment,
+}: {
+  comments: { id: number; entryId: number }[]
+  userIds: number[]
   levels: number
   currentLevel: number
-  parentEntryId?: number
+  parentComment?: { id: number; entryId: number }
 }) => {
-  for (let commentCount = 0; commentCount < faker.datatype.number(amount); commentCount++) {
-    const entryId = faker.helpers.arrayElement(entryIds)
-    const commentRecord = await db.comment.create({
-      data: {
-        entryId: parentEntryId || entryId,
-        authorId: faker.helpers.arrayElement(userIds),
-        content: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 }), "\n\n"),
-        parentId: parentId,
-      },
-    })
+  if (currentLevel <= levels) {
+    if (currentLevel == 0) {
+      currentLevel++
 
-    if (currentLevel < levels) {
-      await createComments({
-        entryIds: entryIds,
-        userIds: userIds,
-        amount: {
-          min: 0,
-          max: 5,
-        },
-        levels: levels,
-        currentLevel: currentLevel++,
-        parentId: commentRecord.id,
-        parentEntryId: parentEntryId || entryId,
-      })
+      for (const comment of comments) {
+        const createdReply = await db.comment.create({
+          data: {
+            entryId: comment.entryId,
+            authorId: faker.helpers.arrayElement(userIds),
+            content: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 }), "\n\n"),
+            parentId: comment.id,
+          },
+          select: {
+            id: true,
+            entryId: true,
+          },
+        })
+
+        await createCommentReplies({
+          comments,
+          userIds,
+          levels,
+          currentLevel,
+          parentComment: createdReply,
+        })
+      }
+    } else {
+      currentLevel++
+
+      for (let i = 0; i < faker.datatype.number({ min: 0, max: 10 }); i++) {
+        const createdReply = await db.comment.create({
+          data: {
+            entryId: parentComment?.entryId as number,
+            authorId: faker.helpers.arrayElement(userIds),
+            content: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 }), "\n\n"),
+            parentId: parentComment?.id as number,
+          },
+          select: {
+            id: true,
+            entryId: true,
+          },
+        })
+
+        await createCommentReplies({
+          comments,
+          userIds,
+          levels,
+          currentLevel,
+          parentComment: createdReply,
+        })
+      }
     }
   }
+}
+
+const createEntryVotes = async ({
+  userIds,
+  entryIds,
+}: {
+  userIds: number[]
+  entryIds: number[]
+}) => {
+  await db.vote.createMany({
+    data: faker.helpers
+      .arrayElements(entryIds, faker.datatype.number({ min: 1, max: entryIds.length }))
+      .flatMap((ele) => {
+        const randomUsers = faker.helpers.arrayElements(
+          userIds,
+          faker.datatype.number({ min: 1, max: userIds.length })
+        )
+
+        return randomUsers.flatMap((user) => {
+          return { entryId: ele, userId: user }
+        })
+      }),
+    skipDuplicates: true,
+  })
 }
 
 export default seed

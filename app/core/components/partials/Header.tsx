@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { Disclosure, Menu, Transition } from "@headlessui/react"
-import { MenuIcon, UserIcon, XIcon } from "@heroicons/react/outline"
+import { Bars3Icon as MenuIcon, UserIcon, XMarkIcon as XIcon } from "@heroicons/react/24/outline"
 import classNames from "classnames"
 import { useMutation } from "@blitzjs/rpc"
 import Logo from "app/core/components/partials/Logo"

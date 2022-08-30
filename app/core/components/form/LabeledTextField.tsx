@@ -1,6 +1,6 @@
 import { forwardRef, PropsWithoutRef } from "react"
 import { useField, useFormikContext, ErrorMessage, FieldInputProps } from "formik"
-import { ExclamationCircleIcon } from "@heroicons/react/outline"
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
 import classNames from "classnames"
 
 export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {

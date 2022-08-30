@@ -10,7 +10,10 @@ const GetEntry = z.object({
 
 export default resolver.pipe(resolver.zod(GetEntry), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const entry = await db.entry.findFirst({ where: { id } })
+  const entry = await db.entry.findFirst({
+    where: { id },
+    include: { votes: true, author: true, comments: true },
+  })
 
   if (!entry) throw new NotFoundError()
 

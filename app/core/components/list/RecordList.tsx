@@ -1,11 +1,11 @@
 /* This example requires Tailwind CSS v2.0+ */
 import {
-  ChatAltIcon,
+  ChatBubbleLeftEllipsisIcon as ChatAltIcon,
   ChevronUpIcon,
   ClockIcon,
-  EyeOffIcon,
+  EyeSlashIcon as EyeOffIcon,
   UserIcon,
-} from "@heroicons/react/outline"
+} from "@heroicons/react/24/outline"
 import { Comment, Entry, User, Vote } from "@prisma/client"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { getSiteName } from "app/helper"
@@ -37,7 +37,7 @@ const RecordList = ({
                   <button className="" id="thumbs_up" onClick={() => {}}>
                     <ChevronUpIcon className="h-4 w-4" />
                   </button>
-                  <div className="">120</div>
+                  <div className="">{entry.votes.length}</div>
                 </div>
 
                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
@@ -53,7 +53,7 @@ const RecordList = ({
                           {entry.title}
                         </a>
                       ) : (
-                        <Link href={`/entry/${entry.id}`}>
+                        <Link href={`/entries/${entry.id}`}>
                           <a className="font-medium text-orange-600 hover:text-orange-800 truncate">
                             {entry.title}
                           </a>
@@ -85,7 +85,7 @@ const RecordList = ({
                             className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <Link href={`/entry/${entry.id}`}>
+                          <Link href={`/entries/${entry.id}`}>
                             <a className="hover:underline">
                               {formatDistance(new Date(entry.createdAt), new Date(), {
                                 addSuffix: true,
