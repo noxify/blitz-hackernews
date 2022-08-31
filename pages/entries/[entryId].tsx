@@ -11,7 +11,7 @@ import deleteEntry from "app/entries/mutations/deleteEntry"
 import getComments from "app/comments/queries/getComments"
 import { arrayToTree } from "performant-array-to-tree"
 import { Comments } from "app/comments/components/Comment"
-import Markdown from "marked-react"
+import Markdown from "markdown-to-jsx"
 
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
@@ -140,7 +140,7 @@ export const Entry = () => {
                 </div>
               </div>
               <div className="mt-2">
-                <Markdown value={entry.content || ""} gfm={true} breaks={true} />
+                <Markdown>{entry.content || ""}</Markdown>
               </div>
             </div>
           </div>

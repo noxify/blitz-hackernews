@@ -1,22 +1,13 @@
-import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
+
 import { useI18n } from "locales"
-import Layout from "app/core/layouts/Layout"
-import getEntry from "app/entries/queries/getEntry"
-import deleteEntry from "app/entries/mutations/deleteEntry"
-import getComments from "app/comments/queries/getComments"
-import { arrayToTree } from "performant-array-to-tree"
-import Markdown from "marked-react"
+
+import Markdown from "markdown-to-jsx"
 
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
   ChevronUpIcon,
   ClockIcon,
-  EyeSlashIcon as EyeOffIcon,
   UserIcon,
 } from "@heroicons/react/24/outline"
 
@@ -24,8 +15,9 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 import { formatDistance } from "date-fns"
-import React, { useState, useEffect, useContext, createContext } from "react"
-import classNames from "classnames"
+import React, { useState, createContext } from "react"
+import MarkdownField from "app/core/components/form/MarkdownField"
+import Form from "app/core/components/form/Form"
 
 const CommentContext = createContext({})
 
@@ -54,13 +46,9 @@ function Reply(props) {
   const [text, setText] = useState("")
   return (
     <div {...props}>
-      <textarea
-        placeholder="What are your thoughts?"
-        defaultValue={text}
-        onChange={(value) => {
-          setText(value.target.value)
-        }}
-      />
+      <Form onSubmit={async (values) => console.log(values)}>
+        <MarkdownField label="Reply" name="reply" />
+      </Form>
       <div className="panel">
         <div className="comment_as">
           Comment as{" "}
@@ -183,7 +171,7 @@ function Comment(props) {
                 </div>
               </div>
               <div className={`${minimized ? "hidden" : "mt-2"}`}>
-                <Markdown value={props.data.content || ""} gfm={true} breaks={true} />
+                <Markdown>{props.data.content || ""}</Markdown>
               </div>
             </div>
           </div>
