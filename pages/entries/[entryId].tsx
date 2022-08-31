@@ -39,6 +39,7 @@ export const Entry = () => {
   })
 
   const commentTree = arrayToTree(comments, {})
+  console.log(commentTree)
 
   return (
     <>
@@ -145,6 +146,8 @@ export const Entry = () => {
           </div>
         </div>
       </div>
+
+      <Comments comments={commentTree} />
     </>
   )
 }

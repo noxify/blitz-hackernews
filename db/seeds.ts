@@ -23,7 +23,9 @@ const seed = async () => {
 
     generatedUsers.push(seedRecord.id)
   }
-  userLog.succeed()
+  const userCount = await db.user.count()
+
+  userLog.succeed(`Generated ${userCount} users`)
 
   const entryLog = log.spinner("Generate entries").start()
   const julyGeneral = await createEntries({
@@ -102,7 +104,9 @@ const seed = async () => {
     },
   })
 
-  entryLog.succeed()
+  const entryCount = await db.entry.count()
+
+  entryLog.succeed(`Generated ${entryCount} entries`)
 
   const generalEntries = ([] as number[]).concat(julyGeneral, augustGeneral, [githubRecord.id])
   const askEntries = ([] as number[]).concat(julyAsk, augustAsk)
@@ -111,18 +115,32 @@ const seed = async () => {
 
   const allEntries = ([] as number[]).concat(generalEntries, askEntries, tellEntries, showEntries)
 
-  const voteLog = log.spinner("Generate votes").start()
+  const voteEntryLog = log.spinner("Generate entry votes").start()
+
   await createEntryVotes({ userIds: generatedUsers, entryIds: allEntries })
-  voteLog.succeed()
+
+  const voteEntryCount = await db.vote.count({ where: { entryId: { not: null } } })
+  voteEntryLog.succeed(`Generated ${voteEntryCount} entry votes`)
 
   const commentLog = log.spinner("Generate comments").start()
-  const generalComments = await createComments({
+
+  await createComments({
     entryIds: allEntries,
     userIds: generatedUsers,
 
     levels: 2,
   })
-  commentLog.succeed()
+  const commentCount = await db.comment.count()
+
+  commentLog.succeed(`Generated ${commentCount} comments`)
+
+  const voteCommentLog = log.spinner("Generate comment votes").start()
+
+  const allComments = (await db.comment.findMany({ select: { id: true } })).map((ele) => ele.id)
+  await createCommentVotes({ userIds: generatedUsers, commentIds: allComments })
+
+  const voteCommentCount = await db.vote.count({ where: { commentId: { not: null } } })
+  voteCommentLog.succeed(`Generated ${voteCommentCount} comment votes`)
 }
 
 const createEntries = async ({
@@ -296,6 +314,30 @@ const createEntryVotes = async ({
 
         return randomUsers.flatMap((user) => {
           return { entryId: ele, userId: user }
+        })
+      }),
+    skipDuplicates: true,
+  })
+}
+
+const createCommentVotes = async ({
+  userIds,
+  commentIds,
+}: {
+  userIds: number[]
+  commentIds: number[]
+}) => {
+  await db.vote.createMany({
+    data: faker.helpers
+      .arrayElements(commentIds, faker.datatype.number({ min: 1, max: commentIds.length }))
+      .flatMap((ele) => {
+        const randomUsers = faker.helpers.arrayElements(
+          userIds,
+          faker.datatype.number({ min: 1, max: 20 })
+        )
+
+        return randomUsers.flatMap((user) => {
+          return { commentId: ele, userId: user }
         })
       }),
     skipDuplicates: true,

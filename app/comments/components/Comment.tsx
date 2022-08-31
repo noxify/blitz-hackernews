@@ -1,5 +1,31 @@
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
+import { useI18n } from "locales"
+import Layout from "app/core/layouts/Layout"
+import getEntry from "app/entries/queries/getEntry"
+import deleteEntry from "app/entries/mutations/deleteEntry"
+import getComments from "app/comments/queries/getComments"
+import { arrayToTree } from "performant-array-to-tree"
+import Markdown from "marked-react"
+
+import {
+  ChatBubbleLeftEllipsisIcon as ChatAltIcon,
+  ChevronUpIcon,
+  ClockIcon,
+  EyeSlashIcon as EyeOffIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline"
+
+import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+
 import { formatDistance } from "date-fns"
 import React, { useState, useEffect, useContext, createContext } from "react"
+import classNames from "classnames"
 
 const CommentContext = createContext({})
 
@@ -14,13 +40,10 @@ function gen_comments(comments, colorindex, path) {
   return comments.map((comment, i) => {
     return (
       <Comment
-        username={comment.data.author.name}
-        date={formatDistance(comment.data.createdAt, new Date())}
-        text={comment.data.content}
-        votes={0}
         colorindex={colorindex}
         key={i}
         path={[...path, i]}
+        data={comment.data}
         comments={comment.children}
       />
     )
@@ -88,79 +111,94 @@ function Rating(props) {
 }
 
 function Comment(props) {
+  const currentUser = useCurrentUser()
+
   const [minimized, setMinimized] = useState(false)
-  const [hidden, setHidden] = useState(false)
+  const { t } = useI18n()
 
   return (
-    <div {...props}>
-      {hidden ? (
-        <button
-          id="showMore"
-          onClick={() => {
-            setHidden(false)
-          }}
-        >
-          Show More Replies
-        </button>
-      ) : (
-        <>
-          <div id="left" className={minimized ? "hidden" : ""}>
-            {/* <Rating votes={props.votes} /> */}
-            votes
+    <>
+      <div className="bg-white shadow overflow-hidden sm:rounded-md mb-4">
+        <div className="flex items-start p-4">
+          <div className="mr-4 text-center text-gray-800">
+            <button className="" id="thumbs_up" onClick={() => {}}>
+              <ChevronUpIcon className="h-4 w-4" />
+            </button>
+            <div className="">{props.data.votes.length}</div>
           </div>
-          <div id="right">
-            <div id="top">
-              <span
-                className="minimize"
-                onClick={() => {
-                  setMinimized(!minimized)
-                }}
-              >
-                [{minimized ? "+" : "-"}]
-              </span>
-              <span id="username">
-                <a href="">{props.username}</a>
-                user
-              </span>
-              <span id="date">
-                <a href="">{props.date}</a>
-                date
-              </span>
-            </div>
-            <div id="content" className={minimized ? "hidden" : ""}>
-              {/* <Markdown options={{ forceBlock: true }}>{props.text}</Markdown> */}
-              content
-            </div>
-            <div id="actions" className={minimized ? "hidden" : ""}>
-              {/* <span
-                className={`${compare(replying, props.path) ? "selected" : ""}`}
-                onClick={() => {
-                  if (compare(replying, props.path)) {
-                    setReplying([])
-                  } else {
-                    setReplying(props.path)
-                  }
-                }}
-              >
-                reply
-              </span> */}
-              <span>report</span>
-            </div>
-            {/* <Reply className={compare(replying, props.path) && !minimized ? "" : "hidden"} /> */}
-            <div className={`comments ${minimized ? "hidden" : ""}`}>
-              {gen_comments(props.comments, props.colorindex + 1, [...props.path])}
+
+          <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <div className="mt-1 flex justify-between">
+                <div className="flex w-full">
+                  <div className="flex items-center text-sm text-gray-500">
+                    <span
+                      onClick={() => {
+                        setMinimized(!minimized)
+                      }}
+                    >
+                      {minimized ? (
+                        <PlusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200"
+                        />
+                      ) : (
+                        <MinusIcon
+                          aria-hidden="true"
+                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200"
+                        />
+                      )}
+                    </span>
+
+                    <UserIcon
+                      className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <Link href={`/user/${props.data.author.id}`}>
+                      <a className="hover:underline">{props.data.author.name}</a>
+                    </Link>
+                  </div>
+                  <div className="ml-2 flex items-center text-sm text-gray-500 ">
+                    <ClockIcon
+                      className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+
+                    <a className="hover:underline">
+                      {formatDistance(new Date(props.data.createdAt), new Date(), {
+                        addSuffix: true,
+                      })}
+                    </a>
+                  </div>
+
+                  <div className="ml-2 flex items-center text-sm text-gray-500 ">
+                    <ChatAltIcon
+                      className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <Link href={`/comments/${props.data.id}`}>
+                      <a className="hover:underline">Replies ({props.comments.length})</a>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className={`${minimized ? "hidden" : "mt-2"}`}>
+                <Markdown value={props.data.content || ""} gfm={true} breaks={true} />
+              </div>
             </div>
           </div>
-        </>
-      )}
-    </div>
+        </div>
+      </div>
+      <div className={`${minimized ? "hidden" : "ml-4"}`}>
+        {gen_comments(props.comments, props.colorindex + 1, [...props.path])}
+      </div>
+    </>
   )
 }
 
 export function Comments({ comments }) {
   var [replying, setReplying] = useState([])
 
-  console.log(comments)
   return (
     <>
       <Reply />
