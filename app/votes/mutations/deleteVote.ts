@@ -1,18 +1,24 @@
-import { resolver } from "@blitzjs/rpc";
-import db from "db";
-import { z } from "zod";
+import { resolver } from "@blitzjs/rpc"
+import db from "db"
+import { z } from "zod"
 
 const DeleteVote = z.object({
-  id: z.number(),
-});
+  commentId: z.number().optional().nullable(),
+  entryId: z.number().optional().nullable(),
+})
 
-export default resolver.pipe(
-  resolver.zod(DeleteVote),
-  resolver.authorize(),
-  async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const vote = await db.vote.deleteMany({ where: { id } });
+export default resolver.pipe(resolver.zod(DeleteVote), resolver.authorize(), async (input, ctx) => {
+  // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  const vote = await db.vote.findFirst({
+    where: {
+      ...input,
+      userId: ctx.session.userId,
+    },
+  })
 
-    return vote;
-  }
-);
+  await db.vote.delete({
+    where: {
+      id: vote?.id,
+    },
+  })
+})

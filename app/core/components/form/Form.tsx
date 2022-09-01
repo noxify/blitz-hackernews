@@ -34,7 +34,7 @@ export function Form<S extends z.ZodType<any, any>>({
     <Formik
       initialValues={initialValues || {}}
       validate={validateZodSchema(schema)}
-      onSubmit={async (values, { setErrors }) => {
+      onSubmit={async (values, { setErrors, resetForm }) => {
         const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) || {}
 
         if (FORM_ERROR) {
@@ -44,6 +44,8 @@ export function Form<S extends z.ZodType<any, any>>({
         if (Object.keys(otherErrors).length > 0) {
           setErrors(otherErrors)
         }
+
+        resetForm()
       }}
     >
       {({ handleSubmit, isSubmitting }) => (
@@ -61,7 +63,7 @@ export function Form<S extends z.ZodType<any, any>>({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-orange-500 hover:bg-orange-600 border-orange-700 px-4 py-2 rounded"
+              className="bg-orange-500 hover:bg-orange-600 border-orange-700 px-4 py-2 rounded mt-2"
             >
               {submitText}
             </button>

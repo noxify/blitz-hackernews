@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ol {
+  @apply list-decimal list-inside my-2;
+}
+
+ul {
+  @apply list-disc list-inside my-2;
+}

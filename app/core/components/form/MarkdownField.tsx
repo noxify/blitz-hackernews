@@ -1,5 +1,5 @@
 import { forwardRef, PropsWithoutRef, useRef } from "react"
-import { useField, useFormikContext, ErrorMessage } from "formik"
+import { useField } from "formik"
 import { Tab } from "@headlessui/react"
 import TextareaMarkdown, { TextareaMarkdownRef } from "textarea-markdown-editor"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -13,8 +13,8 @@ import {
   faCode,
 } from "@fortawesome/free-solid-svg-icons"
 
-import { AtSymbolIcon, CodeBracketIcon, LinkIcon } from "@heroicons/react/20/solid"
 import classNames from "classnames"
+import MarkdownContent from "app/core/components/MarkdownContent"
 
 export interface MarkdownFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["div"]> {
   /** Field name. */
@@ -29,7 +29,6 @@ export interface MarkdownFieldProps extends PropsWithoutRef<JSX.IntrinsicElement
 export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
   ({ name, label, outerProps, ...props }, ref) => {
     const [input, meta, { setValue }] = useField(name)
-    const { isSubmitting } = useFormikContext()
     const mdRef = useRef<TextareaMarkdownRef>(null)
 
     return (
@@ -146,10 +145,8 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                   </div>
                 </Tab.Panel>
                 <Tab.Panel className="-m-0.5 rounded-lg p-0.5">
-                  <div className="border-b">
-                    <div className="mx-px mt-px px-3 pt-2 pb-12 text-sm leading-5 text-gray-800">
-                      Preview content will render here.
-                    </div>
+                  <div className="bg-white shadow overflow-hidden sm:rounded-md p-4">
+                    <MarkdownContent>{input.value || "...Your reply content..."}</MarkdownContent>
                   </div>
                 </Tab.Panel>
               </Tab.Panels>
@@ -157,13 +154,13 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
           )}
         </Tab.Group>
 
-        <ErrorMessage name={name}>
-          {(msg) => (
-            <div role="alert" style={{ color: "red" }}>
-              {msg}
-            </div>
-          )}
-        </ErrorMessage>
+        {meta.error ? (
+          <>
+            <p className="mt-1 text-sm text-red-600" id="email-error">
+              {meta.error}
+            </p>
+          </>
+        ) : null}
       </div>
     )
   }
