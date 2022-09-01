@@ -5,7 +5,7 @@ import Layout from "app/core/layouts/Layout"
 import logo from "public/logo.png"
 import { Routes, BlitzPage, useParam } from "@blitzjs/next"
 import PageHeader from "app/core/components/partials/PageHeader"
-import RecordList from "app/core/components/list/RecordList"
+import RecordList from "app/entries/components/RecordList"
 import { ChevronLeftIcon } from "@heroicons/react/24/outline"
 import { format, startOfDay, sub } from "date-fns"
 import { getLocaleProps, useI18n } from "locales"
@@ -14,18 +14,28 @@ import { date } from "zod"
 import { endOfDay } from "date-fns"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
-import Pagination from "app/core/components/list/Pagination"
+import Pagination from "app/entries/components/Pagination"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 export const getServerSideProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 50
 
 const Past: BlitzPage = () => {
+  const currentUser = useCurrentUser()
   const { t } = useI18n()
   const date = useParam("date", "string")
 
   const pastBaseDate = date ? new Date(date) : new Date()
-
+  const hiddenQuery = currentUser
+    ? {
+        id: {
+          notIn: currentUser.hides
+            .filter((ele) => ele.entryId !== null)
+            .map((ele) => ele.entryId) as number[],
+        },
+      }
+    : {}
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ entries, count, hasMore }] = usePaginatedQuery(getEntries, {
@@ -36,6 +46,7 @@ const Past: BlitzPage = () => {
           createdAt: { gte: startOfDay(pastBaseDate) },
         },
         { createdAt: { lte: endOfDay(pastBaseDate) } },
+        hiddenQuery,
       ],
     },
     skip: ITEMS_PER_PAGE * page,

@@ -1,4 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
+import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
   ChevronUpIcon,
@@ -9,6 +10,8 @@ import {
 import { Comment, Entry, User, Vote } from "@prisma/client"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { getSiteName } from "app/helper"
+import createHide from "app/hides/mutations/createHide"
+import getCurrentUser from "app/users/queries/getCurrentUser"
 import { formatDistance } from "date-fns"
 import { useI18n } from "locales"
 import Link from "next/link"
@@ -23,12 +26,13 @@ const RecordList = ({
   })[]
 }) => {
   const currentUser = useCurrentUser()
+  const [createHideMutation] = useMutation(createHide)
 
   const { t } = useI18n()
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-md">
-      <ul role="list" className="divide-y divide-gray-200">
+      <ul role="list" className="divide-y divide-gray-200 list-none">
         {data &&
           data.map((entry) => (
             <li key={entry.id}>
@@ -99,7 +103,7 @@ const RecordList = ({
                             className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <Link href={`/comments/${entry.id}`}>
+                          <Link href={`/entries/${entry.id}`}>
                             <a className="hover:underline">
                               {t("recordlist.comments")} ({entry.comments.length})
                             </a>
@@ -113,8 +117,9 @@ const RecordList = ({
                             />
                             <a
                               className="hover:underline"
-                              onClick={() => {
-                                console.log("hide record")
+                              onClick={async () => {
+                                await createHideMutation({ entryId: entry.id })
+                                await invalidateQuery(getCurrentUser, null)
                               }}
                             >
                               {t("recordlist.hide")}

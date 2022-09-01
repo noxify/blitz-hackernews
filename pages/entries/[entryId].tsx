@@ -1,8 +1,6 @@
-import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useQuery, useMutation, invalidateQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useI18n } from "locales"
 import Layout from "app/core/layouts/Layout"
@@ -11,10 +9,10 @@ import deleteEntry from "app/entries/mutations/deleteEntry"
 import getComments from "app/comments/queries/getComments"
 import { arrayToTree } from "performant-array-to-tree"
 import { Comments } from "app/comments/components/Comment"
-import Markdown from "markdown-to-jsx"
 
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
+  ChevronDownIcon,
   ChevronUpIcon,
   ClockIcon,
   EyeSlashIcon as EyeOffIcon,
@@ -22,14 +20,20 @@ import {
 } from "@heroicons/react/24/outline"
 import { formatDistance } from "date-fns"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import createVote from "app/votes/mutations/createVote"
+import deleteVote from "app/votes/mutations/deleteVote"
+import MarkdownContent from "app/core/components/MarkdownContent"
+import createHide from "app/hides/mutations/createHide"
+import getCurrentUser from "app/users/queries/getCurrentUser"
 
 export const Entry = () => {
   const { t } = useI18n()
   const currentUser = useCurrentUser()
+  const [createVoteMutation] = useMutation(createVote)
+  const [deleteVoteMutation] = useMutation(deleteVote)
+  const [createHideMutation] = useMutation(createHide)
 
-  const router = useRouter()
   const entryId = useParam("entryId", "number")
-  const [deleteEntryMutation] = useMutation(deleteEntry)
   const [entry] = useQuery(getEntry, { id: entryId })
   const [comments] = useQuery(getComments, {
     orderBy: { id: "desc" },
@@ -39,7 +43,8 @@ export const Entry = () => {
   })
 
   const commentTree = arrayToTree(comments, {})
-
+  const hasVoted =
+    currentUser?.id && entry.votes.find((ele) => ele.userId == currentUser.id) ? true : false
   return (
     <>
       <Head>
@@ -47,12 +52,35 @@ export const Entry = () => {
       </Head>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <div className="flex items-center p-4">
+        <div className="flex items-top p-4">
           <div className="mr-4 text-center text-gray-800">
-            <button className="" id="thumbs_up" onClick={() => {}}>
-              <ChevronUpIcon className="h-4 w-4" />
-            </button>
+            {currentUser && !hasVoted && (
+              <button
+                id="thumbs_up"
+                onClick={async () => {
+                  await createVoteMutation({ entryId: entryId })
+                  await invalidateQuery(getEntry, {
+                    id: entryId,
+                  })
+                }}
+              >
+                <ChevronUpIcon className="h-4 w-4" />
+              </button>
+            )}
             <div className="">{entry.votes.length}</div>
+            {currentUser && hasVoted && (
+              <button
+                id="thumbs_down"
+                onClick={async () => {
+                  await deleteVoteMutation({ entryId: entry.id })
+                  await invalidateQuery(getEntry, {
+                    id: entryId,
+                  })
+                }}
+              >
+                <ChevronDownIcon className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
           <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
@@ -128,8 +156,9 @@ export const Entry = () => {
                       />
                       <a
                         className="hover:underline"
-                        onClick={() => {
-                          console.log("hide record")
+                        onClick={async () => {
+                          await createHideMutation({ entryId })
+                          await invalidateQuery(getCurrentUser, null)
                         }}
                       >
                         {t("recordlist.hide")}
@@ -139,14 +168,19 @@ export const Entry = () => {
                 </div>
               </div>
               <div className="mt-2">
-                <Markdown>{entry.content || ""}</Markdown>
+                <MarkdownContent>{entry.content || ""}</MarkdownContent>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <Comments comments={commentTree} userId={currentUser?.id || null} entryId={entry.id} />
+      <Comments
+        comments={commentTree}
+        userId={currentUser?.id || null}
+        entryId={entry.id}
+        userHides={currentUser?.hides}
+      />
     </>
   )
 }

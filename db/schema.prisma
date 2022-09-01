@@ -31,11 +31,12 @@ model User {
 }
 
 model Hide {
-  user    User @relation(fields: [userId], references: [id])
-  userId  Int
-  entryId Int
+  id Int @id @default(autoincrement())
 
-  @@unique([userId, entryId])
+  user      User @relation(fields: [userId], references: [id])
+  userId    Int
+  entryId   Int?
+  commentId Int?
 }
 
 model Favorite {

@@ -64,65 +64,65 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
 
                 {/* These buttons are here simply as examples and don't actually do anything. */}
                 {selectedIndex === 0 ? (
-                  <div className="ml-auto flex items-center space-x-5">
+                  <div className="ml-auto flex items-center space-x-5 mr-4">
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("bold")}
                       >
                         <span className="sr-only">Bold</span>
-                        <FontAwesomeIcon icon={faBold} />
+                        <FontAwesomeIcon icon={faBold} size="1x" />
                       </button>
                     </div>
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("strike-through")}
                       >
                         <span className="sr-only">Strikethrough</span>
-                        <FontAwesomeIcon icon={faStrikethrough} />
+                        <FontAwesomeIcon icon={faStrikethrough} size="1x" />
                       </button>
                     </div>
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("italic")}
                       >
                         <span className="sr-only">Italic</span>
-                        <FontAwesomeIcon icon={faItalic} />
+                        <FontAwesomeIcon icon={faItalic} size="1x" />
                       </button>
                     </div>
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("ordered-list")}
                       >
                         <span className="sr-only">ordered list</span>
-                        <FontAwesomeIcon icon={faListOl} />
+                        <FontAwesomeIcon icon={faListOl} size="1x" />
                       </button>
                     </div>
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("unordered-list")}
                       >
                         <span className="sr-only">unordered list</span>
-                        <FontAwesomeIcon icon={faListUl} />
+                        <FontAwesomeIcon icon={faListUl} size="1x" />
                       </button>
                     </div>
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("code")}
                       >
                         <span className="sr-only">Code</span>
-                        <FontAwesomeIcon icon={faCode} />
+                        <FontAwesomeIcon icon={faCode} size="1x" />
                       </button>
                     </div>
                   </div>

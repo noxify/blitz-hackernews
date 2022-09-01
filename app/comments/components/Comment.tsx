@@ -2,8 +2,6 @@ import Link from "next/link"
 
 import { useI18n } from "locales"
 
-import Markdown from "markdown-to-jsx"
-
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
   ChevronDownIcon,
@@ -25,10 +23,14 @@ import getComments from "app/comments/queries/getComments"
 import createVote from "app/votes/mutations/createVote"
 import classNames from "classnames"
 import deleteVote from "app/votes/mutations/deleteVote"
+import MarkdownContent from "app/core/components/MarkdownContent"
+import createHide from "app/hides/mutations/createHide"
+import deleteHide from "app/hides/mutations/deleteHide"
+import getCurrentUser from "app/users/queries/getCurrentUser"
 
 const CommentContext = createContext({})
 
-function gen_comments(comments, entryId, userId) {
+function gen_comments(comments, entryId, userId, hides) {
   return comments.map((comment, i) => {
     return (
       <Comment
@@ -37,6 +39,7 @@ function gen_comments(comments, entryId, userId) {
         key={i}
         data={comment.data}
         comments={comment.children}
+        hides={hides}
       />
     )
   })
@@ -70,13 +73,20 @@ function Reply(props) {
 function Comment(props) {
   const [createVoteMutation] = useMutation(createVote)
   const [deleteVoteMutation] = useMutation(deleteVote)
-
-  const [minimized, setMinimized] = useState(false)
-  const [reply, setReply] = useState(false)
-  const { t } = useI18n()
+  const [createHideMutation] = useMutation(createHide)
+  const [deleteHideMutation] = useMutation(deleteHide)
 
   const hasVoted =
     props.userId && props.data.votes.find((ele) => ele.userId == props.userId) ? true : false
+
+  const isHidden =
+    props.userId &&
+    props.hides.find((ele) => ele.commentId == props.data.id && ele.userId == props.userId)
+
+  const [minimized, setMinimized] = useState(isHidden)
+  const [reply, setReply] = useState(false)
+  const { t } = useI18n()
+
   return (
     <>
       <a id={props.data.id}></a>
@@ -118,9 +128,16 @@ function Comment(props) {
                 <div className="flex w-full">
                   <div className="flex items-center text-sm text-gray-500">
                     <span
-                      onClick={() => {
+                      onClick={async () => {
                         setMinimized(!minimized)
                         setReply(false)
+                        if (props.userId) {
+                          !isHidden
+                            ? await createHideMutation({ commentId: props.data.id })
+                            : await deleteHideMutation({ commentId: props.data.id })
+
+                          await invalidateQuery(getCurrentUser, null)
+                        }
                       }}
                     >
                       {minimized ? (
@@ -170,7 +187,7 @@ function Comment(props) {
                 </div>
               </div>
               <div className={`${minimized ? "hidden" : "mt-2"}`}>
-                <Markdown>{props.data.content || ""}</Markdown>
+                <MarkdownContent>{props.data.content || ""}</MarkdownContent>
               </div>
               {!minimized && props.userId && (
                 <span
@@ -196,20 +213,20 @@ function Comment(props) {
         )}
       </div>
       <div className={`${minimized ? "hidden" : "ml-4"}`}>
-        {gen_comments(props.comments, props.entryId, props.userId)}
+        {gen_comments(props.comments, props.entryId, props.userId, props.hides)}
       </div>
     </>
   )
 }
 
-export function Comments({ comments, entryId, userId }) {
+export function Comments({ comments, entryId, userId, userHides }) {
   return (
     <>
       {userId && (
         <Reply submitText="Add Comment" userId={userId} entryId={entryId} parentId={null} />
       )}
       <CommentContext.Provider value={[]}>
-        <div className="my-4">{gen_comments(comments, entryId, userId)}</div>
+        <div className="my-4">{gen_comments(comments, entryId, userId, userHides)}</div>
       </CommentContext.Provider>
     </>
   )
