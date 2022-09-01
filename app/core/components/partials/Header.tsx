@@ -22,10 +22,10 @@ const navigation = [
     href: `/past/${format(sub(new Date(), { days: 1 }), "yyyy-MM-dd")}`,
     alias: "past",
   },
-  { name: "Comments", href: "/comments", alias: "comments" },
   { name: "Ask", href: "/ask", alias: "ask" },
   { name: "Show", href: "/show", alias: "show" },
-  { name: "Submit", href: "/submit", alias: "submit" },
+  { name: "Tell", href: "/tell", alias: "tell" },
+  { name: "Submit", href: "/entries/new", alias: "submit" },
 ]
 const userNavigation = [
   { name: "Your Profile", href: "/profile" },

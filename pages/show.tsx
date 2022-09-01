@@ -6,7 +6,6 @@ import { getLocaleProps, useI18n } from "locales"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
-import { endOfDay, format, startOfDay } from "date-fns"
 import Pagination from "app/entries/components/Pagination"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
@@ -14,7 +13,7 @@ export const getServerSideProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 10
 
-const Home: BlitzPage = () => {
+const ShowPage: BlitzPage = () => {
   const { t } = useI18n()
 
   const currentUser = useCurrentUser()
@@ -33,11 +32,10 @@ const Home: BlitzPage = () => {
     orderBy: { id: "desc" },
     where: {
       AND: [
-        {
-          createdAt: { gte: startOfDay(new Date()) },
-        },
-        { createdAt: { lte: endOfDay(new Date()) } },
         hiddenQuery,
+        {
+          type: { equals: "show" },
+        },
       ],
     },
     skip: ITEMS_PER_PAGE * page,
@@ -48,11 +46,8 @@ const Home: BlitzPage = () => {
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <Layout title={t("pages.latest.title")} currentItem="home">
-      <PageHeader
-        title={t("pages.latest.title")}
-        subtitle={`(Date: ${format(new Date(), "yyyy-MM-dd")})`}
-      />
+    <Layout title={t("pages.show.title")} currentItem="show">
+      <PageHeader title={t("pages.show.title")} />
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Pagination
           position="top"
@@ -76,4 +71,4 @@ const Home: BlitzPage = () => {
   )
 }
 
-export default Home
+export default ShowPage

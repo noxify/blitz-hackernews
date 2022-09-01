@@ -16,6 +16,19 @@ import { formatDistance } from "date-fns"
 import { useI18n } from "locales"
 import Link from "next/link"
 
+const getPrefix = (type: string) => {
+  switch (type) {
+    case "ask":
+      return "Ask:"
+    case "tell":
+      return "Tell:"
+    case "show":
+      return "Show:"
+    default:
+      return ""
+  }
+}
+
 const RecordList = ({
   data,
 }: {
@@ -47,6 +60,10 @@ const RecordList = ({
                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                   <div className="truncate">
                     <div className="flex text-sm">
+                      {entry.type !== "general" && (
+                        <span className="font-medium">{getPrefix(entry.type)}&nbsp;</span>
+                      )}
+
                       {entry.link ? (
                         <a
                           href={entry.link}

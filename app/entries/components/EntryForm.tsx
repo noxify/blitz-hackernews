@@ -28,7 +28,7 @@ export function EntryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
           return !["general", "show"].includes(values.type)
         }}
       />
-      <MarkdownField name="link" label="Content" placeholder="" />
+      <MarkdownField name="content" label="Content" placeholder="" />
     </Form>
   )
 }

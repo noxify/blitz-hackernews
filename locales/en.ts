@@ -13,6 +13,9 @@ export default {
   "userNavigation.logout": "Logout",
 
   "pages.latest.title": "Latest entries",
+  "pages.ask.title": "Ask",
+  "pages.tell.title": "Tell",
+  "pages.show.title": "Show",
 
   "pages.past.title": "Past entries",
   "pages.past.filters.day": "Day",
@@ -23,4 +26,6 @@ export default {
   "recordlist.hide": "Hide",
   "recordlist.comments": "Comments",
   "recordlist.discuss": "Discuss",
+
+  date: "Date",
 } as const

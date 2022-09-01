@@ -1,6 +1,6 @@
 import { forwardRef, Fragment, PropsWithoutRef } from "react"
 import { useField, useFormikContext, ErrorMessage } from "formik"
-import { CheckIcon, ExclamationCircleIcon, SelectorIcon } from "@heroicons/react/outline"
+import { CheckIcon, ChevronUpDownIcon as SelectorIcon } from "@heroicons/react/24/outline"
 import classNames from "classnames"
 import { Listbox, Transition } from "@headlessui/react"
 
