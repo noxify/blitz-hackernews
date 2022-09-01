@@ -71,3 +71,11 @@ Here some helpful links which should help to change the db engine.
 * The VueJS team for the [theme inspiration](https://www.prisma.io/docs/concepts/database-connectors)
 * [@QuiiBz](https://github.com/QuiiBz) for creating the awesome [next-international](https://github.com/QuiiBz/next-international) package
 * Comment section is based on https://codesandbox.io/s/llmk22kz19
+
+## Screenshots
+
+![](screenshots/latest-entries.png)
+
+![](screenshots/past-entries.png)
+
+![](screenshots/details-with-nested-comments.png)

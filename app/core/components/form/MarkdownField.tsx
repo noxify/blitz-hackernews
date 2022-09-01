@@ -64,11 +64,11 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
 
                 {/* These buttons are here simply as examples and don't actually do anything. */}
                 {selectedIndex === 0 ? (
-                  <div className="ml-auto flex items-center space-x-5 mr-4">
+                  <div className="ml-auto flex items-center space-x-5 mr-4 h-4">
                     <div className="flex items-center">
                       <button
                         type="button"
-                        className="-m-2.5 inline-flex  items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
+                        className="-m-2.5 inline-flex items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                         onClick={() => mdRef.current?.trigger("bold")}
                       >
                         <span className="sr-only">Bold</span>

@@ -21,7 +21,7 @@ export default resolver.pipe(async ({ where, orderBy, skip = 0, take = 100 }: Ge
         ...paginateArgs,
         where,
         orderBy,
-        include: { author: true, comments: true, votes: {} },
+        include: { author: true, comments: true, votes: true },
       }),
   })
 
