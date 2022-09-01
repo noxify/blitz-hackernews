@@ -10,12 +10,20 @@ it's more a "self-hosted hackernews".
 ## What's included
 
 * Simple UI with tailwind
-* User management ( login, signup etc. via BlitzJS )
 * List entries
 * Show entry details
+* Create new entries
 * Hide entries
 * Up-Vote entries
-* Comments
+* Show comments ( nested, of course)
+* Create new comments
+* Up-Vote for comments
+* Login & Signup
+
+## TODO
+
+- [ ] User profile ( show profile, update profile etc.)
+- [ ] Save favorites
 
 ## What's not included
 
@@ -33,20 +41,20 @@ npm i
 
 ## Run it locally
 
-Just run the following command 🤷🏿‍♂️
-
-```sh
-npm run dev
-```
+1. Update the `.env` file with some valid database credentials
+2. Run the migrations via `npm run migrate:dev`
+3. (Optional) Run the seeder to get some fake data via `npm run seed`
+4. Start the dev server via `npm run dev`
 
 ## Use a different database engine
 
-By default the app uses a SQLite database - You can change it to what you want.
+By default the app uses a postgres database - You can change it to what you want.
 
 Here some helpful links which should help to change the db engine.
 
-* https://blitzjs.com/docs/postgres
 * https://www.prisma.io/docs/concepts/database-connectors
+
+> I tried to get it running with SQLite, but then the seeder wasn't working, because `createMany` isn't supported with SQLite.
 
 ## Used packages
 * BlitzJS
@@ -61,5 +69,5 @@ Here some helpful links which should help to change the db engine.
 * The [BlitzJS](https://blitzjs.com/) team - you're awesome
 * The [TailwindCSS](https://tailwindcss.com/)/[TailwindUI](https://tailwindui.com/) team - thanks for the awesome components
 * The VueJS team for the [theme inspiration](https://www.prisma.io/docs/concepts/database-connectors)
-* My wife for being at a festival, so I had time to develop this app 🙈
 * [@QuiiBz](https://github.com/QuiiBz) for creating the awesome [next-international](https://github.com/QuiiBz/next-international) package
+* Comment section is based on https://codesandbox.io/s/llmk22kz19

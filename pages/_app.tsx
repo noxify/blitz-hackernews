@@ -2,7 +2,7 @@ import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@bl
 import { AuthenticationError, AuthorizationError } from "blitz"
 import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import "resources/css/tailwind.css"
 import Spinner from "app/core/components/Spinner"
@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <I18nProvider locale={pageProps.locale}>
           <Component {...pageProps} />
         </I18nProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </Suspense>
     </ErrorBoundary>
   )
