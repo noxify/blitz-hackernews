@@ -7,7 +7,7 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
 import Pagination from "app/entries/components/Pagination"
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { useCurrentUser } from "app/users/hooks/useCurrentUser"
 
 export const getServerSideProps = getLocaleProps()
 

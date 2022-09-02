@@ -46,6 +46,7 @@
     "date-fns": "2.29.2",
     "extract-domain": "2.4.8",
     "formik": "2.2.9",
+    "international-types": "0.3.5",
     "next": "12.2.5",
     "next-international": "0.3.5",
     "performant-array-to-tree": "1.11.0",

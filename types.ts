@@ -1,5 +1,7 @@
 import { SimpleRolesIsAuthorized } from "@blitzjs/auth"
 import { User } from "db"
+import { LocaleKeys } from "international-types"
+import type Locale from "locales/en"
 
 export type Role = "ADMIN" | "USER"
 
@@ -12,4 +14,10 @@ declare module "@blitzjs/auth" {
       views?: number
     }
   }
+}
+
+export type NavigationLink = {
+  name: LocaleKeys<typeof Locale, undefined>
+  href: string
+  alias?: string
 }

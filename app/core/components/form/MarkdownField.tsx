@@ -15,19 +15,19 @@ import {
 
 import classNames from "classnames"
 import MarkdownContent from "app/core/components/MarkdownContent"
+import { useI18n } from "locales"
 
 export interface MarkdownFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["div"]> {
   /** Field name. */
   name: string
-  /** Field label. */
-  label: string
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: "text" | "password" | "email" | "number"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
 export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
-  ({ name, label, outerProps, ...props }, ref) => {
+  ({ name, outerProps, ...props }, ref) => {
+    const { t } = useI18n()
     const [input, meta, { setValue }] = useField(name)
     const mdRef = useRef<TextareaMarkdownRef>(null)
 
@@ -47,7 +47,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                     )
                   }
                 >
-                  Write
+                  {t("comments.write")}
                 </Tab>
                 <Tab
                   className={({ selected }) =>
@@ -59,7 +59,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                     )
                   }
                 >
-                  Preview
+                  {t("comments.preview")}
                 </Tab>
 
                 {/* These buttons are here simply as examples and don't actually do anything. */}
@@ -130,9 +130,6 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
               </Tab.List>
               <Tab.Panels className="mt-2">
                 <Tab.Panel className="-m-0.5 rounded-lg p-0.5">
-                  <label htmlFor={name} className="sr-only">
-                    {label}
-                  </label>
                   <div>
                     <TextareaMarkdown
                       name={name}
@@ -146,7 +143,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                 </Tab.Panel>
                 <Tab.Panel className="-m-0.5 rounded-lg p-0.5">
                   <div className="bg-white shadow overflow-hidden sm:rounded-md p-4">
-                    <MarkdownContent>{input.value || "...Your reply content..."}</MarkdownContent>
+                    <MarkdownContent>{input.value || "...Your content..."}</MarkdownContent>
                   </div>
                 </Tab.Panel>
               </Tab.Panels>

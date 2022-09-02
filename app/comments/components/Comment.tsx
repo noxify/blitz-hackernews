@@ -47,6 +47,7 @@ function gen_comments(comments, entryId, userId, hides) {
 
 function Reply(props) {
   const [commentMutation] = useMutation(createComment)
+  const { t } = useI18n()
 
   return (
     <div className="my-4">
@@ -62,9 +63,9 @@ function Reply(props) {
 
           await invalidateQuery(getComments, { where: { entryId: props.entryId } })
         }}
-        submitText={props.submitText || "Add reply"}
+        submitText={props.submitText || t("comments.add_reply")}
       >
-        <MarkdownField label="Reply" name="content" />
+        <MarkdownField name="content" />
       </Form>
     </div>
   )
@@ -143,12 +144,12 @@ function Comment(props) {
                       {minimized ? (
                         <PlusIcon
                           aria-hidden="true"
-                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200"
+                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200 cursor-pointer"
                         />
                       ) : (
                         <MinusIcon
                           aria-hidden="true"
-                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200"
+                          className="h-5 w-5 rounded bg-gray-100 text-gray-400 hover:bg-gray-200 cursor-pointer"
                         />
                       )}
                     </span>
@@ -182,7 +183,9 @@ function Comment(props) {
                       aria-hidden="true"
                     />
 
-                    <span>Replies ({props.comments.length})</span>
+                    <span>
+                      {t("comments.replies")} ({props.comments.length})
+                    </span>
                   </div>
                 </div>
               </div>
@@ -190,13 +193,16 @@ function Comment(props) {
                 <MarkdownContent>{props.data.content || ""}</MarkdownContent>
               </div>
               {!minimized && props.userId && (
-                <span
-                  onClick={() => {
-                    setReply(!reply)
-                  }}
-                >
-                  Reply
-                </span>
+                <div className="mt-2">
+                  <span
+                    className="bg-gray-100 hover:bg-gray-200 p-2 rounded mt-2 cursor-pointer"
+                    onClick={() => {
+                      setReply(!reply)
+                    }}
+                  >
+                    {t("comments.reply")}
+                  </span>
+                </div>
               )}
             </div>
           </div>
@@ -204,7 +210,7 @@ function Comment(props) {
         {!minimized && props.userId && reply && (
           <div className="px-4">
             <Reply
-              submitText="Add Comment"
+              submitText={t("comments.add_reply")}
               userId={props.userId}
               entryId={props.entryId}
               parentId={props.data.id}
@@ -220,10 +226,16 @@ function Comment(props) {
 }
 
 export function Comments({ comments, entryId, userId, userHides }) {
+  const { t } = useI18n()
   return (
     <>
       {userId && (
-        <Reply submitText="Add Comment" userId={userId} entryId={entryId} parentId={null} />
+        <Reply
+          submitText={t("comments.add_comment")}
+          userId={userId}
+          entryId={entryId}
+          parentId={null}
+        />
       )}
       <CommentContext.Provider value={[]}>
         <div className="my-4">{gen_comments(comments, entryId, userId, userHides)}</div>

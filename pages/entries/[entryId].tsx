@@ -19,7 +19,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline"
 import { formatDistance } from "date-fns"
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { useCurrentUser } from "app/users/hooks/useCurrentUser"
 import createVote from "app/votes/mutations/createVote"
 import deleteVote from "app/votes/mutations/deleteVote"
 import MarkdownContent from "app/core/components/MarkdownContent"

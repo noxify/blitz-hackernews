@@ -1,26 +1,39 @@
-export default {
-  "navigation.latest": "Latest",
-  "navigation.past": "Past",
-  "navigation.comments": "Comments",
-  "navigation.ask": "Ask",
-  "navigation.show": "Show",
-  "navigation.submit": "Submit",
+import { defineLocale } from "locales"
 
-  "userNavigation.login": "Login",
-  "userNavigation.signup": "Sign up",
-  "userNavigation.profile": "Profile",
-  "userNavigation.settings": "Settings",
-  "userNavigation.logout": "Logout",
+export default defineLocale({
+  "navigation.latest": "Neuste",
+  "navigation.past": "Ältere",
+  "navigation.ask": "Fragen",
+  "navigation.show": "Links",
+  "navigation.tell": "Erzählungen",
+  "navigation.submit": "Hinzufügen",
 
-  "pages.latest.title": "Latest entries",
+  "usernavigation.login": "Anmelden",
+  "usernavigation.signup": "Registrieren",
+  "usernavigation.profile": "Profil",
+  "usernavigation.settings": "Einstellungen",
+  "usernavigation.logout": "Abmelden",
 
-  "pages.past.title": "Past entries",
-  "pages.past.filters.day": "Day",
-  "pages.past.filters.week": "Week",
-  "pages.past.filters.month": "Month",
-  "pages.past.filters.year": "Year",
+  "pages.latest.title": "Neuste Einträge",
+  "pages.ask.title": "Fragen",
+  "pages.tell.title": "Erzählungen",
+  "pages.show.title": "Links",
 
-  "recordlist.hide": "Hide",
-  "recordlist.comments": "Comments",
-  "recordlist.discuss": "Discuss",
-} as const
+  "pages.past.title": "Ältere Einträge",
+  "pages.past.filters.day": "Tag",
+  "pages.past.filters.week": "Woche",
+  "pages.past.filters.month": "Monat",
+  "pages.past.filters.year": "Jahr",
+  "pages.past.date": undefined,
+
+  "recordlist.hide": "Ausblenden",
+  "recordlist.comments": "Kommentare",
+  "recordlist.no_data": "Keine Einträge gefunden.",
+
+  "comments.add_comment": "Kommentar hinzufügen",
+  "comments.add_reply": "Antwort hinzufügen",
+  "comments.reply": "Antworten",
+  "comments.replies": "Antworten",
+  "comments.write": "Schreiben",
+  "comments.preview": "Vorschau",
+})

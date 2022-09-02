@@ -7,8 +7,8 @@ const { withBlitz } = require("@blitzjs/next")
 const config = {
   i18n: {
     locales: [ 'de', 'en' ],
-    localeDetection: false,
-    defaultLocale: 'en'
+    defaultLocale: 'en',
+    localeDetection: false
   },
 }
 

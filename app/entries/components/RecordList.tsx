@@ -8,7 +8,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline"
 import { Comment, Entry, User, Vote } from "@prisma/client"
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { useCurrentUser } from "app/users/hooks/useCurrentUser"
 import { getSiteName } from "app/helper"
 import createHide from "app/hides/mutations/createHide"
 import getCurrentUser from "app/users/queries/getCurrentUser"
@@ -150,6 +150,17 @@ const RecordList = ({
               </div>
             </li>
           ))}
+        {data && data.length == 0 && (
+          <li>
+            <div className="flex items-center hover:bg-gray-50 p-4">
+              <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+                <div className="truncate">
+                  <div className="flex text-sm">{t("recordlist.no_data")}</div>
+                </div>
+              </div>
+            </div>
+          </li>
+        )}
       </ul>
     </div>
   )

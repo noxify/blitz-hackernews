@@ -1,16 +1,16 @@
 export default {
   "navigation.latest": "Latest",
   "navigation.past": "Past",
-  "navigation.comments": "Comments",
   "navigation.ask": "Ask",
   "navigation.show": "Show",
+  "navigation.tell": "Tell",
   "navigation.submit": "Submit",
 
-  "userNavigation.login": "Login",
-  "userNavigation.signup": "Sign up",
-  "userNavigation.profile": "Profile",
-  "userNavigation.settings": "Settings",
-  "userNavigation.logout": "Logout",
+  "usernavigation.login": "Login",
+  "usernavigation.signup": "Sign up",
+  "usernavigation.profile": "Profile",
+  "usernavigation.settings": "Settings",
+  "usernavigation.logout": "Logout",
 
   "pages.latest.title": "Latest entries",
   "pages.ask.title": "Ask",
@@ -22,10 +22,16 @@ export default {
   "pages.past.filters.week": "Week",
   "pages.past.filters.month": "Month",
   "pages.past.filters.year": "Year",
+  "pages.past.date": "Date",
 
   "recordlist.hide": "Hide",
   "recordlist.comments": "Comments",
-  "recordlist.discuss": "Discuss",
+  "recordlist.no_data": "No entries found.",
 
-  date: "Date",
+  "comments.add_comment": "Add comment",
+  "comments.add_reply": "Add reply",
+  "comments.reply": "Reply",
+  "comments.replies": "Replies",
+  "comments.write": "Write",
+  "comments.preview": "Preview",
 } as const
