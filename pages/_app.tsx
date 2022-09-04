@@ -3,10 +3,13 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import en from "locales/en"
 
 import "resources/css/tailwind.css"
 import Spinner from "app/core/components/Spinner"
-import { I18nProvider } from "locales"
+import { I18nProvider, getLocaleProps } from "locales"
+
+export const getServerSideProps = getLocaleProps()
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -32,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       <Suspense fallback={<Spinner />}>
-        <I18nProvider locale={pageProps.locale}>
+        <I18nProvider locale={pageProps.locale} fallbackLocale={en}>
           <Component {...pageProps} />
         </I18nProvider>
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}

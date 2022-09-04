@@ -9,8 +9,10 @@ import { useRouter } from "next/router"
 import { endOfDay, format, startOfDay } from "date-fns"
 import Pagination from "app/entries/components/Pagination"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
+import { GetStaticProps } from "next"
 
-export const getServerSideProps = getLocaleProps()
+//export const getServerSideProps = getLocaleProps()
+//export const getStaticProps: GetStaticProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 10
 
