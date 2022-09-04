@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       <Suspense fallback={<Spinner />}>
-        <I18nProvider locale={pageProps.locale} fallbackLocale={en}>
+        <I18nProvider locale={pageProps.locale}>
           <Component {...pageProps} />
         </I18nProvider>
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}

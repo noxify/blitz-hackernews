@@ -2,14 +2,12 @@ import Layout from "app/core/layouts/Layout"
 import { BlitzPage } from "@blitzjs/next"
 import PageHeader from "app/core/components/partials/PageHeader"
 import RecordList from "app/entries/components/RecordList"
-import { getLocaleProps, useI18n } from "locales"
+import { useI18n } from "locales"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
 import Pagination from "app/entries/components/Pagination"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
-
-export const getServerSideProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 10
 

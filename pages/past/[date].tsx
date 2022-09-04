@@ -5,15 +5,13 @@ import PageHeader from "app/core/components/partials/PageHeader"
 import RecordList from "app/entries/components/RecordList"
 import { ChevronLeftIcon } from "@heroicons/react/24/outline"
 import { format, startOfDay, sub } from "date-fns"
-import { getLocaleProps, useI18n } from "locales"
+import { useI18n } from "locales"
 import { useRouter } from "next/router"
 import { endOfDay } from "date-fns"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import Pagination from "app/entries/components/Pagination"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
-
-export const getServerSideProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 50
 
@@ -56,7 +54,7 @@ const Past: BlitzPage = () => {
     <Layout title={t("pages.past.title")} currentItem="past">
       <PageHeader
         title={t("pages.past.title")}
-        subtitle={`(${t("date")}: ${format(pastBaseDate, "yyyy-MM-dd")})`}
+        subtitle={`(${t("pages.past.date")}: ${format(pastBaseDate, "yyyy-MM-dd")})`}
       >
         <Link href={`/past/${format(sub(pastBaseDate, { days: 1 }), "yyyy-MM-dd")}`}>
           <a className="mr-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none ">
