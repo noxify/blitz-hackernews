@@ -7,9 +7,7 @@ import en from "locales/en"
 
 import "resources/css/tailwind.css"
 import Spinner from "app/core/components/Spinner"
-import { I18nProvider, getLocaleProps } from "locales"
-
-export const getServerSideProps = getLocaleProps()
+import { I18nProvider } from "locales"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {

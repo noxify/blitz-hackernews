@@ -13,6 +13,8 @@ export default {
   "usernavigation.logout": "Logout",
 
   "pages.latest.title": "Latest entries",
+  "pages.latest.date": "Date",
+
   "pages.ask.title": "Ask",
   "pages.tell.title": "Tell",
   "pages.show.title": "Show",
@@ -24,6 +26,18 @@ export default {
   "pages.past.filters.year": "Year",
   "pages.past.date": "Date",
 
+  "pages.create.field.type.label": "Type",
+  "pages.create.field.type.Title": "Title",
+  "pages.create.field.type.Link": "Link",
+
+  "pages.create.field.type.option.general": "General",
+  "pages.create.field.type.option.ask": "Ask",
+  "pages.create.field.type.option.tell": "Tell",
+  "pages.create.field.type.option.show": "Show",
+
+  "pages.create.title": "Submit new entry",
+  "pages.create.create_entry": "Create entry",
+
   "recordlist.hide": "Hide",
   "recordlist.comments": "Comments",
   "recordlist.no_data": "No entries found.",
@@ -34,4 +48,7 @@ export default {
   "comments.replies": "Replies",
   "comments.write": "Write",
   "comments.preview": "Preview",
+
+  "pagination.previous": "Previous",
+  "pagination.next": "Next",
 } as const

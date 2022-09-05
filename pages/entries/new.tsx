@@ -6,20 +6,25 @@ import createEntry from "app/entries/mutations/createEntry"
 import { EntryForm, FORM_ERROR } from "app/entries/components/EntryForm"
 import { CreateEntry } from "app/entries/validations"
 import PageHeader from "app/core/components/partials/PageHeader"
+import { getLocaleProps, useI18n } from "locales"
+
+export const getServerSideProps = getLocaleProps()
 
 const NewEntryPage = () => {
   const router = useRouter()
   const [createEntryMutation] = useMutation(createEntry)
 
+  const { t } = useI18n()
+
   return (
-    <Layout title={"Submit new entry"}>
-      <PageHeader title="Submit new entry" />
+    <Layout title={t("pages.create.title")}>
+      <PageHeader title={"pages.create.title"} />
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <EntryForm
           initialValues={{ type: "general", title: "", link: "", content: "" }}
           className="space-y-4"
-          submitText="Create Entry"
+          submitText={t("pages.create.create_entry")}
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
@@ -28,7 +33,7 @@ const NewEntryPage = () => {
           onSubmit={async (values) => {
             try {
               const entry = await createEntryMutation(values)
-              router.push(Routes.ShowEntryPage({ entryId: entry.id }))
+              await router.push(Routes.ShowEntryPage({ entryId: entry.id }))
             } catch (error: any) {
               console.error(error)
               return {

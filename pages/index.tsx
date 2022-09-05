@@ -2,13 +2,15 @@ import Layout from "app/core/layouts/Layout"
 import { BlitzPage } from "@blitzjs/next"
 import PageHeader from "app/core/components/partials/PageHeader"
 import RecordList from "app/entries/components/RecordList"
-import { useI18n } from "locales"
+import { getLocaleProps, useI18n } from "locales"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getEntries from "app/entries/queries/getEntries"
 import { useRouter } from "next/router"
 import { endOfDay, format, startOfDay } from "date-fns"
 import Pagination from "app/entries/components/Pagination"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
+
+export const getServerSideProps = getLocaleProps()
 
 const ITEMS_PER_PAGE = 10
 
@@ -49,7 +51,7 @@ const Home: BlitzPage = () => {
     <Layout title={t("pages.latest.title")} currentItem="home">
       <PageHeader
         title={t("pages.latest.title")}
-        subtitle={`(Date: ${format(new Date(), "yyyy-MM-dd")})`}
+        subtitle={`(${t("pages.latest.date")}: ${format(new Date(), "yyyy-MM-dd")})`}
       />
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Pagination

@@ -15,6 +15,8 @@ export default defineLocale({
   "usernavigation.logout": "Abmelden",
 
   "pages.latest.title": "Neuste Einträge",
+  "pages.latest.date": "Datum",
+
   "pages.ask.title": "Fragen",
   "pages.tell.title": "Erzählungen",
   "pages.show.title": "Links",
@@ -24,7 +26,19 @@ export default defineLocale({
   "pages.past.filters.week": "Woche",
   "pages.past.filters.month": "Monat",
   "pages.past.filters.year": "Jahr",
-  "pages.past.date": undefined,
+  "pages.past.date": "Datum",
+
+  "pages.create.field.type.label": "Typ",
+  "pages.create.field.type.Title": "Titel",
+  "pages.create.field.type.Link": "Link",
+
+  "pages.create.field.type.option.general": "Generell",
+  "pages.create.field.type.option.ask": "Frage",
+  "pages.create.field.type.option.tell": "Erzählung",
+  "pages.create.field.type.option.show": "Link",
+
+  "pages.create.title": "Neuen Eintrag hinzufügen",
+  "pages.create.create_entry": "Eintrag erstellen",
 
   "recordlist.hide": "Ausblenden",
   "recordlist.comments": "Kommentare",
@@ -36,4 +50,7 @@ export default defineLocale({
   "comments.replies": "Antworten",
   "comments.write": "Schreiben",
   "comments.preview": "Vorschau",
+
+  "pagination.previous": "Vorherige",
+  "pagination.next": "Nächste",
 })

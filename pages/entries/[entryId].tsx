@@ -2,13 +2,14 @@ import Head from "next/head"
 import Link from "next/link"
 import { useQuery, useMutation, invalidateQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { useI18n } from "locales"
+import { getLocaleProps, useI18n } from "locales"
 import Layout from "app/core/layouts/Layout"
 import getEntry from "app/entries/queries/getEntry"
-import deleteEntry from "app/entries/mutations/deleteEntry"
 import getComments from "app/comments/queries/getComments"
 import { arrayToTree } from "performant-array-to-tree"
 import { Comments } from "app/comments/components/Comment"
+
+export const getServerSideProps = getLocaleProps()
 
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
