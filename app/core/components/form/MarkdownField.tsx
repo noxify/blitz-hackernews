@@ -72,7 +72,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("bold")}
                       >
                         <span className="sr-only">Bold</span>
-                        <FontAwesomeIcon icon={faBold} size="1x" />
+                        <FontAwesomeIcon icon={faBold} size="1x" className="h-4" />
                       </button>
                     </div>
                     <div className="flex items-center">
@@ -82,7 +82,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("strike-through")}
                       >
                         <span className="sr-only">Strikethrough</span>
-                        <FontAwesomeIcon icon={faStrikethrough} size="1x" />
+                        <FontAwesomeIcon icon={faStrikethrough} size="1x" className="h-4" />
                       </button>
                     </div>
                     <div className="flex items-center">
@@ -92,7 +92,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("italic")}
                       >
                         <span className="sr-only">Italic</span>
-                        <FontAwesomeIcon icon={faItalic} size="1x" />
+                        <FontAwesomeIcon icon={faItalic} size="1x" className="h-4" />
                       </button>
                     </div>
                     <div className="flex items-center">
@@ -102,7 +102,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("ordered-list")}
                       >
                         <span className="sr-only">ordered list</span>
-                        <FontAwesomeIcon icon={faListOl} size="1x" />
+                        <FontAwesomeIcon icon={faListOl} size="1x" className="h-4" />
                       </button>
                     </div>
                     <div className="flex items-center">
@@ -112,7 +112,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("unordered-list")}
                       >
                         <span className="sr-only">unordered list</span>
-                        <FontAwesomeIcon icon={faListUl} size="1x" />
+                        <FontAwesomeIcon icon={faListUl} size="1x" className="h-4" />
                       </button>
                     </div>
                     <div className="flex items-center">
@@ -122,7 +122,7 @@ export const MarkdownField = forwardRef<HTMLInputElement, MarkdownFieldProps>(
                         onClick={() => mdRef.current?.trigger("code")}
                       >
                         <span className="sr-only">Code</span>
-                        <FontAwesomeIcon icon={faCode} size="1x" />
+                        <FontAwesomeIcon icon={faCode} size="1x" className="h-4" />
                       </button>
                     </div>
                   </div>
