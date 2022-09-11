@@ -2,19 +2,19 @@
 import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
-  ChevronUpIcon,
   ClockIcon,
   EyeSlashIcon as EyeOffIcon,
   UserIcon,
 } from "@heroicons/react/24/outline"
-import { Comment, Entry, User, Vote } from "@prisma/client"
+import { Comment, Entry, User, Vote as VoteModel } from "@prisma/client"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
-import { getSiteName } from "app/helper"
 import createHide from "app/hides/mutations/createHide"
 import getCurrentUser from "app/users/queries/getCurrentUser"
 import { formatDistance } from "date-fns"
 import { useI18n } from "locales"
 import Link from "next/link"
+import Vote from "app/votes/components/Vote"
+import getEntries from "app/entries/queries/getEntries"
 
 const getPrefix = (type: string) => {
   switch (type) {
@@ -35,7 +35,7 @@ const RecordList = ({
   data: (Entry & {
     author: User
     comments: Comment[]
-    votes: Vote[]
+    votes: VoteModel[]
   })[]
 }) => {
   const currentUser = useCurrentUser()
@@ -50,12 +50,12 @@ const RecordList = ({
           data.map((entry) => (
             <li key={entry.id}>
               <div className="flex items-center hover:bg-gray-50 p-4">
-                <div className="mr-4 text-center text-gray-800">
-                  <button className="" id="thumbs_up" onClick={() => {}}>
-                    <ChevronUpIcon className="h-4 w-4" />
-                  </button>
-                  <div className="">{entry.votes.length}</div>
-                </div>
+                <Vote
+                  entry={entry}
+                  invalidateFn={async () => {
+                    await invalidateQuery(getEntries, {})
+                  }}
+                />
 
                 <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                   <div className="truncate">

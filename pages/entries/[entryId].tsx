@@ -13,25 +13,22 @@ export const getServerSideProps = getLocaleProps()
 
 import {
   ChatBubbleLeftEllipsisIcon as ChatAltIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   ClockIcon,
   EyeSlashIcon as EyeOffIcon,
   UserIcon,
 } from "@heroicons/react/24/outline"
 import { formatDistance } from "date-fns"
 import { useCurrentUser } from "app/users/hooks/useCurrentUser"
-import createVote from "app/votes/mutations/createVote"
-import deleteVote from "app/votes/mutations/deleteVote"
 import MarkdownContent from "app/core/components/MarkdownContent"
 import createHide from "app/hides/mutations/createHide"
 import getCurrentUser from "app/users/queries/getCurrentUser"
+import Vote from "app/votes/components/Vote"
+import { Entry as EntryModel } from "@prisma/client"
 
 export const Entry = () => {
   const { t } = useI18n()
   const currentUser = useCurrentUser()
-  const [createVoteMutation] = useMutation(createVote)
-  const [deleteVoteMutation] = useMutation(deleteVote)
+
   const [createHideMutation] = useMutation(createHide)
 
   const entryId = useParam("entryId", "number")
@@ -44,8 +41,6 @@ export const Entry = () => {
   })
 
   const commentTree = arrayToTree(comments, {})
-  const hasVoted =
-    currentUser?.id && entry.votes.find((ele) => ele.userId == currentUser.id) ? true : false
   return (
     <>
       <Head>
@@ -54,35 +49,12 @@ export const Entry = () => {
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <div className="flex items-top p-4">
-          <div className="mr-4 text-center text-gray-800">
-            {currentUser && !hasVoted && (
-              <button
-                id="thumbs_up"
-                onClick={async () => {
-                  await createVoteMutation({ entryId: entryId })
-                  await invalidateQuery(getEntry, {
-                    id: entryId,
-                  })
-                }}
-              >
-                <ChevronUpIcon className="h-4 w-4" />
-              </button>
-            )}
-            <div className="">{entry.votes.length}</div>
-            {currentUser && hasVoted && (
-              <button
-                id="thumbs_down"
-                onClick={async () => {
-                  await deleteVoteMutation({ entryId: entry.id })
-                  await invalidateQuery(getEntry, {
-                    id: entryId,
-                  })
-                }}
-              >
-                <ChevronDownIcon className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          <Vote
+            entry={entry}
+            invalidateFn={async (entry: EntryModel) => {
+              await invalidateQuery(getEntry, { id: entry.id })
+            }}
+          />
 
           <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
